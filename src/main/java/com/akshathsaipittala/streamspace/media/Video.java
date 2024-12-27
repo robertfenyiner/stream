@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.library;
+package com.akshathsaipittala.streamspace.media;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

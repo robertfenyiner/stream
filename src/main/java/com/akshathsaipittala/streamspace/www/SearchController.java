@@ -1,7 +1,8 @@
 package com.akshathsaipittala.streamspace.www;
 
-import com.akshathsaipittala.streamspace.helpers.Preference;
-import com.akshathsaipittala.streamspace.helpers.UserPreferences;
+import com.akshathsaipittala.streamspace.user.preferences.Preference;
+import com.akshathsaipittala.streamspace.user.preferences.UserPreferences;
+import com.akshathsaipittala.streamspace.www.clients.YTSAPIClient;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

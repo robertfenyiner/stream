@@ -1,10 +1,8 @@
-package com.akshathsaipittala.streamspace.helpers;
+package com.akshathsaipittala.streamspace.user.preferences;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,15 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@Repository
-public interface UserPreferences extends ListCrudRepository<Preference, Integer> {
-}
-
 @Slf4j
 @RestController
 @RequestMapping("/preference")
 @RequiredArgsConstructor
-class PreferencesAPI {
+public class PreferencesAPI {
 
     final UserPreferences userPreferences;
 

@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.library;
+package com.akshathsaipittala.streamspace.media;
 
 import bt.metainfo.TorrentFile;
 import bt.metainfo.TorrentId;
@@ -229,8 +229,4 @@ public class Indexer {
 
         return songs;
     }
-}
-
-enum SOURCE {
-    LOCAL, WEB, TORRENT
 }

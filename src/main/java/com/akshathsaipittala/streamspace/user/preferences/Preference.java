@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.helpers;
+package com.akshathsaipittala.streamspace.user.preferences;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

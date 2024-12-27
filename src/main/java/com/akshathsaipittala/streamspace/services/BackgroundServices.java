@@ -1,7 +1,8 @@
 package com.akshathsaipittala.streamspace.services;
 
-import com.akshathsaipittala.streamspace.helpers.*;
-import com.akshathsaipittala.streamspace.library.Indexer;
+import com.akshathsaipittala.streamspace.media.Indexer;
+import com.akshathsaipittala.streamspace.user.preferences.Preference;
+import com.akshathsaipittala.streamspace.user.preferences.UserPreferences;
 import com.akshathsaipittala.streamspace.torrentengine.TorrentDownloadManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

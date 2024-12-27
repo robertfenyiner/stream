@@ -1,5 +1,8 @@
-package com.akshathsaipittala.streamspace.www;
+package com.akshathsaipittala.streamspace.config;
 
+import com.akshathsaipittala.streamspace.www.clients.APIBayClient;
+import com.akshathsaipittala.streamspace.www.clients.MicrosoftStoreAPI;
+import com.akshathsaipittala.streamspace.www.clients.YTSAPIClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;

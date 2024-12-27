@@ -1,10 +1,10 @@
 package com.akshathsaipittala.streamspace.torrentengine;
 
 import com.akshathsaipittala.streamspace.helpers.DOWNLOADTYPE;
-import com.akshathsaipittala.streamspace.library.Indexer;
+import com.akshathsaipittala.streamspace.media.Indexer;
 import com.akshathsaipittala.streamspace.downloads.Downloads;
 import com.akshathsaipittala.streamspace.services.ContentDirectoryServices;
-import com.akshathsaipittala.streamspace.helpers.DownloadTask;
+import com.akshathsaipittala.streamspace.downloads.DownloadTask;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.www;
 
-import com.akshathsaipittala.streamspace.library.VideoRepository;
-import com.akshathsaipittala.streamspace.library.MusicRepository;
+import com.akshathsaipittala.streamspace.media.VideoRepository;
+import com.akshathsaipittala.streamspace.media.MusicRepository;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
