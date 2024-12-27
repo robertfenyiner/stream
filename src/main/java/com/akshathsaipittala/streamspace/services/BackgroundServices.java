@@ -3,12 +3,10 @@ package com.akshathsaipittala.streamspace.services;
 import com.akshathsaipittala.streamspace.helpers.*;
 import com.akshathsaipittala.streamspace.library.Indexer;
 import com.akshathsaipittala.streamspace.torrentengine.TorrentDownloadManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,21 +14,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BackgroundServices {
 
-    @Lazy
-    @Autowired
-    private Indexer indexer;
+    final Indexer indexer;
+    final TorrentDownloadManager torrentDownloadManager;
+    final UserPreferences userPreferences;
 
-    @Lazy
-    @Autowired
-    private TorrentDownloadManager torrentDownloadManager;
-
-    @Lazy
-    @Autowired
-    private UserPreferences userPreferences;
-
-    @Async
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReadyEvent() {
         log.info("Indexing Local Media");
@@ -42,7 +32,7 @@ public class BackgroundServices {
 
         // Index local media asynchronously
         indexer.indexLocalMedia(new HashSet<>(ContentDirectoryServices.mediaFolders.values()))
-                .thenRun(() -> torrentDownloadManager.startAllPendingDownloads()) // Start background downloads once indexing is done
+                .thenRun(torrentDownloadManager::startAllPendingDownloads) // Start background downloads once indexing is done
                 .exceptionally(throwable -> { // Handle any errors during indexing or download initiation
                     log.error("Error during media indexing or starting background downloads", throwable);
                     return null; // Return null or handle the error as appropriate

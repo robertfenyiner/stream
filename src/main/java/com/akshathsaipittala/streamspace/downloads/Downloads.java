@@ -4,7 +4,6 @@ import com.akshathsaipittala.streamspace.helpers.DownloadTask;
 import com.akshathsaipittala.streamspace.helpers.CONTENTTYPE;
 import com.akshathsaipittala.streamspace.helpers.DOWNLOADTYPE;
 import com.akshathsaipittala.streamspace.torrentengine.TorrentDownloadManager;
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface Downloads extends ListCrudRepository<DownloadTask, String> {
@@ -34,18 +31,15 @@ class DownloadsController {
     final TorrentDownloadManager torrentDownloadManager;
 
     @GetMapping("")
-    HtmxResponse getAllDownloads() {
+    String getAllDownloads(Model model) {
         List<DownloadTask> listOfDownloads = downloads.findAll();
 
         if (listOfDownloads.isEmpty()) {
-            return HtmxResponse.builder()
-                    .view("downloads :: showNoDownloads")
-                    .build();
+            return "downloads :: showNoDownloads";
         } else {
-            return HtmxResponse
-                    .builder()
-                    .view(new ModelAndView("downloads :: showAllDownloads", Map.of("tasks", listOfDownloads)))
-                    .build();
+            model.addAttribute("tasks", listOfDownloads);
+            return "downloads :: showAllDownloads";
+
         }
     }
 
@@ -57,11 +51,8 @@ class DownloadsController {
     }
 
     @GetMapping("/form")
-    HtmxResponse downloadForm() {
-
-        return HtmxResponse.builder()
-                .view("downloads :: downloadTorrent")
-                .build();
+    String downloadForm() {
+        return "downloads :: downloadTorrent";
     }
 
     /*@PostMapping("/togglePause")
@@ -72,7 +63,7 @@ class DownloadsController {
 
     @HxRequest
     @PostMapping("/torrent")
-    HtmxResponse downloadTorrent(
+    String downloadTorrent(
             @RequestParam("selectedOption") String torrentHash,
             @RequestParam(value = "sequentialCheck", required = false) String sequentialCheck,
             @RequestParam(value = "torrentName", required = false) String torrentName,
@@ -88,25 +79,18 @@ class DownloadsController {
             task = new DownloadTask(torrentHash, torrentName !=null ? torrentName:torrentHash, torrentHash, CONTENTTYPE.VIDEO, DOWNLOADTYPE.RANDOMIZED);
         }
         torrentDownloadManager.startDownload(task);
-
-        return HtmxResponse
-                .builder()
-                .view(new ModelAndView("downloads :: downloadProgress", Map.of("torrentHash", torrentHash)))
-                .build();
+        return "downloads :: downloadProgress";
     }
 
     @HxRequest
     @PostMapping("/torrent/{torrentHash}")
-    HtmxResponse downloadTorrent(@PathVariable String torrentHash) {
+    String downloadTorrent(Model model,@PathVariable String torrentHash) {
         log.info("Selected Option: {}", torrentHash);
 
         DownloadTask task = new DownloadTask(torrentHash, torrentHash, torrentHash, CONTENTTYPE.AUDIO, DOWNLOADTYPE.SEQUENTIAL);
         torrentDownloadManager.startDownload(task);
-
-        return HtmxResponse
-                .builder()
-                .view(new ModelAndView("downloads :: downloadProgress", Map.of("torrentHash", torrentHash)))
-                .build();
+        model.addAttribute("torrentHash", torrentHash);
+        return "downloads :: downloadProgress";
     }
 
     @PostMapping("/pause/{hashString}")

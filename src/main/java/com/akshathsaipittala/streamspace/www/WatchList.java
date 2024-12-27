@@ -1,6 +1,5 @@
 package com.akshathsaipittala.streamspace.www;
 
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -50,11 +49,9 @@ class WatchListController {
 
     @HxRequest
     @GetMapping("")
-    public HtmxResponse getWatchList(Model model) {
+    public String getWatchList(Model model) {
         model.addAttribute("watchlistitems", watchList.findAll());
-        return HtmxResponse.builder()
-                .view("watchlistitems")
-                .build();
+        return "watchlistitems";
     }
 
     @HxRequest

@@ -1,6 +1,5 @@
 package com.akshathsaipittala.streamspace.www;
 
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -58,10 +57,8 @@ class MusicController {
 
     @HxRequest
     @GetMapping("/featured/flac")
-    HtmxResponse getFeaturedFLAC(Model model) {
+    String getFeaturedFLAC(Model model) {
         model.addAttribute("music", apiBayClient.getLosslessFLACAudio());
-        return HtmxResponse.builder()
-                .view("music :: featured-lossless-audio")
-                .build();
+        return "music :: featured-lossless-audio";
     }
 }

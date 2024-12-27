@@ -1,6 +1,5 @@
 package com.akshathsaipittala.streamspace.www;
 
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -127,14 +126,12 @@ class YTSMoviesController {
 
     @HxRequest
     @GetMapping("/movies/{id}")
-    HtmxResponse getNewOverview(@PathVariable("id") int id, Model model) {
+    String getNewOverview(@PathVariable("id") int id, Model model) {
 
         model.addAttribute("ytsMovieRecord", ytsapiClient.getMovieDetails(id));
         model.addAttribute("ytsSuggestedRecord", ytsapiClient.getSuggestedMovies(id));
 
-        return HtmxResponse.builder()
-                .view("ytsMovie :: ytsMovieOverview")
-                .build();
+        return "ytsMovie :: ytsMovieOverview";
     }
 
     @GetMapping("/movies/{id}")
@@ -147,7 +144,7 @@ class YTSMoviesController {
     }
 
     @GetMapping("/movies/cat/{category}")
-    HtmxResponse viewAllPage(Model model,
+    String viewAllPage(Model model,
                                     @RequestParam(defaultValue = "1") int page,
                                     @PathVariable("category") String category) {
 
@@ -169,70 +166,56 @@ class YTSMoviesController {
 
         model.addAttribute("currentPage", page);
 
-        return HtmxResponse.builder()
-                .view("viewAll :: gallery")
-                .build();
+        return "viewAll :: gallery";
     }
 
     @HxRequest
     @GetMapping("/ytsMostWatched")
-    HtmxResponse ytsMostWatched(Model model) {
+    String ytsMostWatched(Model model) {
         model.addAttribute("ytsMostWatchedRecord", ytsapiClient.getMostWatchedMovies());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsMostWatched")
-                .build();
+        return "movies :: ytsMostWatched";
     }
 
     @HxRequest
     @GetMapping("/ytsLatest")
-    HtmxResponse ytsLatest(Model model) {
+    String ytsLatest(Model model) {
         model.addAttribute("ytsLatestRecord", ytsapiClient.getLatestMovies());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsLatest")
-                .build();
+        return "movies :: ytsLatest";
     }
 
     @HxRequest
     @GetMapping("/ytsMostLiked")
-    HtmxResponse ytsMostLiked(Model model) {
+    String ytsMostLiked(Model model) {
         model.addAttribute("ytsMostLikedRecord", ytsapiClient.getMostLiked());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsMostLiked")
-                .build();
+        return "movies :: ytsMostLiked";
     }
 
     @HxRequest
     @GetMapping("/ytsImdbRating")
-    HtmxResponse ytsImdbRating(Model model) {
+    String ytsImdbRating(Model model) {
         model.addAttribute("ytsIMDBHighestRatedRecord", ytsapiClient.getIMDBHighestRated());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsImdbRating")
-                .build();
+        return "movies :: ytsImdbRating";
     }
 
     @HxRequest
     @GetMapping("/ytsLatestComedies")
-    HtmxResponse ytsLatestComedies(Model model) {
+    String ytsLatestComedies(Model model) {
         model.addAttribute("ytsLatestComedyRecord", ytsapiClient.getLatestComedyMovies());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsLatestComedies")
-                .build();
+        return "movies :: ytsLatestComedies";
     }
 
     @HxRequest
     @GetMapping("/ytsMustWatch")
-    HtmxResponse ytsMustWatch(Model model) {
+    String ytsMustWatch(Model model) {
 
         model.addAttribute("ytsMustWatchRecord", ytsapiClient.getMustWatch());
 
-        return HtmxResponse.builder()
-                .view("movies :: ytsMustWatch")
-                .build();
+        return "movies :: ytsMustWatch";
     }
 
 }

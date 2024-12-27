@@ -1,7 +1,6 @@
 package com.akshathsaipittala.streamspace.www;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -416,7 +415,7 @@ class StoreContentController {
     final MicrosoftStoreAPI microsoftStoreAPI;
 
     @GetMapping("/newreleases")
-    HtmxResponse newReleases(Model model) {
+    String newReleases(Model model) {
         var productsList = microsoftStoreAPI.newReleases(1, 24, "movies", "AllProducts").productsList();
         // Workaround for .active class to one of the slides,
         model.addAttribute("activeItem", productsList.getFirst());
@@ -425,9 +424,7 @@ class StoreContentController {
         productsList.addAll(microsoftStoreAPI.topSelling(1, 24, "movies", "AllProducts").productsList());
         productsList.addAll(microsoftStoreAPI.topRented(1, 24, "movies", "AllProducts").productsList());
         model.addAttribute("productsList", productsList);
-        return HtmxResponse.builder()
-                .view("movies :: msftfeatured")
-                .build();
+        return "movies :: msftfeatured";
     }
 
     record FilteredCategories(
