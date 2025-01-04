@@ -39,29 +39,19 @@ public class Indexer {
         log.info("FileName {}", fileName);
         log.info("TorrentName {}", torrentName);
 
-        Video video = videoRepository.findByName(fileName);
+        Video video;
+        List<Video> videos = videoRepository.findAllByName(fileName);
 
-        if (video != null) {
-            log.info("Movie Found {}", video);
-            videoRepository.delete(video);
-            // TODO: need to revisit
-            // Primary key cannot be updated due to which new record is created
-            // hence deleting and inserting as new with latest torrentId
+        if (!videos.isEmpty()) {
+            videos.forEach(vid -> log.info("Movie Found: {}", vid.getName()));
+            videoRepository.deleteAllByName(fileName);
+            video = createVideoEntity(file, torrentName, fileName, torrentId, contentMimeType);
             video.setMovieCode(torrentId.toString().toUpperCase());
             log.info("{} already indexed", fileName);
             videoRepository.save(video);
         } else {
-            video = new Video()
-                    .setContentLength(file.getSize())
-                    .setName(fileName)
-                    .setCreated(LocalDateTime.now())
-                    .setSummary(fileName)
-                    .setContentMimeType(contentMimeType)
-                    .setContentId(contentDirectoryServices.getMoviesContentStore() + torrentName + "/" + fileName)
-                    .setMovieCode(torrentId.toString().toUpperCase())
-                    .setSource(SOURCE.TORRENT);
-
-            log.info("Content ID {}", contentDirectoryServices.getMoviesContentStore() + torrentName + "/" + fileName);
+            video = createVideoEntity(file, torrentName, fileName, torrentId, contentMimeType);
+            log.debug("Content ID {}", contentDirectoryServices.getMoviesContentStore() + torrentName + "/" + fileName);
             videoRepository.save(video);
         }
 
@@ -228,5 +218,19 @@ public class Indexer {
         }
 
         return songs;
+    }
+
+    private Video createVideoEntity(TorrentFile file, String torrentName,
+                                    String fileName, TorrentId torrentId,
+                                    String contentMimeType) {
+        return new Video()
+                .setContentLength(file.getSize())
+                .setName(fileName)
+                .setCreated(LocalDateTime.now())
+                .setSummary(fileName)
+                .setContentMimeType(contentMimeType)
+                .setContentId(contentDirectoryServices.getMoviesContentStore() + torrentName + "/" + fileName)
+                .setMovieCode(torrentId.toString().toUpperCase())
+                .setSource(SOURCE.TORRENT);
     }
 }

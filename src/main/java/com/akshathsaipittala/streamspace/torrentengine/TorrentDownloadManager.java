@@ -26,11 +26,9 @@ public class TorrentDownloadManager {
     final DownloadProgressHandler downloadProgressHandler;
 
     public void startDownload(DownloadTask downloadTask) {
+        TorrentClient torrentClient = clients.get(downloadTask.getTorrentHash());
         if (!downloads.existsById(downloadTask.getTorrentHash())) {
-            TorrentClient torrentClient;
             try {
-                torrentClient = clients.get(downloadTask.getTorrentHash());
-
                 if (torrentClient != null) {
                     torrentClient.resume();
                 } else {
@@ -47,7 +45,17 @@ public class TorrentDownloadManager {
                 log.error(e.getMessage(), e);
             }
         } else {
-            clients.get(downloadTask.getTorrentHash()).resume();
+            if (torrentClient != null) {
+                torrentClient.resume();
+            } else {
+                torrentClient = new TorrentClient(
+                        downloadTaskToOptions(downloadTask),
+                        indexer,
+                        downloadProgressHandler,
+                        this); // Passing current instance
+                clients.put(downloadTask.getTorrentHash(), torrentClient);
+                torrentClient.resume();
+            }
         }
     }
 
