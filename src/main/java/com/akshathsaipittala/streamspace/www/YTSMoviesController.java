@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+import java.util.function.Function;
+
 @Slf4j
 @Controller
 @RequestMapping("/yts")
@@ -45,20 +48,16 @@ public class YTSMoviesController {
 
         model.addAttribute("category", category);
 
-        if (category.equals("latest")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getLatestMovies(page));
-        } else if (category.equals("mostliked")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getMostLiked(page));
-        } else if (category.equals("imdbrating")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getIMDBHighestRated(page));
-        } else if (category.equals("mostwatched")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getMostWatchedMovies(page));
-        } else if (category.equals("latestcomedies")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getLatestComedyMovies(page));
-        } else if (category.equals("mustwatch")) {
-            model.addAttribute("ytsMoviesRecord", ytsapiClient.getMustWatch(page));
-        }
+        Map<String, Function<Integer, YTSAPIClient.YTSMoviesRecord>> categoryMap = Map.of(
+                "latest", ytsapiClient::getLatestMovies,
+                "mostliked", ytsapiClient::getMostLiked,
+                "imdbrating", ytsapiClient::getIMDBHighestRated,
+                "mostwatched", ytsapiClient::getMostWatchedMovies,
+                "latestcomedies", ytsapiClient::getLatestComedyMovies,
+                "mustwatch", ytsapiClient::getMustWatch
+        );
 
+        model.addAttribute("ytsMoviesRecord", categoryMap.get(category).apply(page));
         model.addAttribute("currentPage", page);
 
         return "viewAll :: gallery";

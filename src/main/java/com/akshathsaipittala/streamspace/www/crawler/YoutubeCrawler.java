@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,19 +54,13 @@ public class YoutubeCrawler {
                         .contents.getFirst().itemSectionRenderer.contents
         );
 
-        ArrayList<YouTubeResponseDTO> youTubeResponseDTOS = new ArrayList<>(contentList.size());
-
-        contentList.stream()
-                .filter(content1 -> content1.videoRenderer() != null)
-                .forEach(
-                        content1 -> youTubeResponseDTOS.add(
-                                new YouTubeResponseDTO(
-                                        content1.videoRenderer().title().runs().getFirst().text,
-                                        content1.videoRenderer().videoId,
-                                        content1.videoRenderer().thumbnail.thumbnails.getFirst().url)
-                        )
-                );
-        return youTubeResponseDTOS;
+        return contentList.stream()
+        .filter(content1 -> content1.videoRenderer() != null)
+        .map(content1 -> new YouTubeResponseDTO(
+                content1.videoRenderer().title().runs().getFirst().text,
+                content1.videoRenderer().videoId,
+                content1.videoRenderer().thumbnail.thumbnails.getFirst().url))
+        .collect(Collectors.toList());
     }
 
     private Content crawlSearchResults(String searchQuery) {
@@ -80,14 +75,13 @@ public class YoutubeCrawler {
             // String matcher0 = matcher.group(0);
             // String matcher1 = matcher.group(1);
             // String matcher2 = matcher.group(2);
-            Matcher matcher = polymerInitialDataRegex.matcher(document.getElementsByTag("script").outerHtml());
+            Matcher matcher = polymerInitialDataRegex.matcher(document.html());
             if (!matcher.find()) {
                 log.warn("Failed to match ytInitialData JSON object");
             }
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(matcher.group(2));
-
             JsonNode contents = jsonNode.get("contents");
             return Objects.requireNonNull(objectMapper.treeToValue(contents, Content.class));
         });
