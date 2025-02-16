@@ -92,9 +92,10 @@ public class DownloadsController {
         return ResponseEntity.ok("<i hx-post=/download/torrent/" + pauseHash+ " class=\"bi bi-arrow-clockwise\" hx-target=\"#download-container\" hx-swap=\"outerHTML\"></i>");
     }
 
-    @PostMapping("/cancel/{hashString}")
+    @HxRequest
+    @DeleteMapping("/{hashString}")
     ResponseEntity<String> cancelDownload(@PathVariable("hashString") String cancelHash) {
         torrentDownloadManager.cancelDownload(cancelHash);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("Cancelled!");
     }
 }

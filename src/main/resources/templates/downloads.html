@@ -91,7 +91,7 @@
 
     </div>
 
-    <div th:each="task : ${tasks}">
+    <div th:each="task : ${tasks}" th:id="|task-item-${task.torrentHash}|">
 
         <!--TODO: Allow User to cancel a download-->
         <!--<div class="pb-3 text-end">
@@ -156,6 +156,13 @@
                            hx-indicator=".globalProgress"
                            hx-target="#downloads-player">
                             <i class="bi bi-play"></i>
+                        </a>
+                        <a th:attr="hx-delete=@{/download/{hashString}(hashString=${task.torrentHash})},hx-target=|#task-item-${task.torrentHash}|"
+                           hx-trigger="click"
+                           hx-swap="delete"
+                           hx-method="delete"
+                           hx-indicator=".globalProgress">
+                            <i class="bi bi-trash3"></i>
                         </a>
                     </div>
                 </div>
