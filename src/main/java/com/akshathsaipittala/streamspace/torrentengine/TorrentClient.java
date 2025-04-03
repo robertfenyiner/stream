@@ -114,35 +114,25 @@ public class TorrentClient {
                 .storage(storage)
                 .selector(selector);
 
-        SessionStateLogger torrentStateLogger = options.isDisableTorrentStateLogs() ?
-                null : new SessionStateLogger(downloadProgressHandler, torrentDownloadManager);
-
-        if (torrentStateLogger != null) {
-
+        if (!options.isDisableTorrentStateLogs()) {
+            torrentStateLogger = Optional.of(new SessionStateLogger(downloadProgressHandler, torrentDownloadManager));
             clientBuilder.afterTorrentFetched(torrent -> {
                 String torrentName = torrent.getName();
                 TorrentId torrentId = torrent.getTorrentId();
-                // Set the custom filename for each file in the torrent
                 torrent.getFiles().forEach(file -> {
-                    // Set the custom filename for the file
                     file.getPathElements().forEach(fileName -> {
-                                if (fileName.endsWith(".mp4") || fileName.endsWith(".mkv") || fileName.endsWith(".avi")) {
-                                    indexer.indexMovie(file, torrentName, fileName, torrentId, "video/mp4");
-                                    log.info("Video {}", fileName);
-                                } else if (fileName.endsWith(".mp3") || fileName.endsWith(".flac")) {
-                                    // mediaIndexer.indexMusic(file, torrentName, fileName, torrentId);
-                                    log.info("Audio {}", fileName);
-                                } else {
-                                    // noop for OTHERS
-                                    log.info("Others {}", fileName);
-                                }
-                            }
-                    );
+                        if (fileName.endsWith(".mp4") || fileName.endsWith(".mkv") || fileName.endsWith(".avi")) {
+                            indexer.indexMovie(file, torrentName, fileName, torrentId, "video/mp4");
+                            log.info("Video {}", fileName);
+                        } else if (fileName.endsWith(".mp3") || fileName.endsWith(".flac")) {
+                            log.info("Audio {}", fileName);
+                        } else {
+                            log.info("Others {}", fileName);
+                        }
+                    });
                 });
-
-                torrentStateLogger.setTorrent(torrent);
+                torrentStateLogger.ifPresent(logger -> logger.setTorrent(torrent));
             });
-
         }
 
         if (options.getMetainfoFile() != null) {
@@ -154,7 +144,6 @@ public class TorrentClient {
         }
 
         this.client = clientBuilder.build();
-        this.torrentStateLogger = Optional.ofNullable(torrentStateLogger);
     }
 
     private Optional<Integer> getPortOverride() {
@@ -195,7 +184,7 @@ public class TorrentClient {
         try {
             Security.setProperty(key, value);
         } catch (Exception e) {
-            log.error(String.format("Failed to set security property '%s' to '%s'", key, value), e);
+            log.error("Failed to set security property '{}' to '{}'", key, value, e);
         }
     }
 
