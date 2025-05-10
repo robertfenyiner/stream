@@ -17,10 +17,7 @@
     <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
     <!-- Bootstrap ICONS -->
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}">
-
-<!--    <link rel="manifest" th:href="@{/assets/manifest.json}">-->
     <link rel="apple-touch-icon" th:href="@{/assets/images/logo.png}" />
-
     <style>
         /*@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');*/
         /** {
@@ -367,9 +364,9 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="playlist-tab" data-bs-toggle="tab" data-bs-target="#playlist"
+                    <button class="nav-link" id="downloads-tab" data-bs-toggle="tab" data-bs-target="#downloads"
                             type="button"
-                            role="tab" aria-controls="playlist" aria-selected="false">
+                            role="tab" aria-controls="downloads" aria-selected="false">
                         <i class="bi bi-cloud-arrow-down"></i>
                         Downloads <span hx-get="/download/count" hx-trigger="load" class="badge text-bg-secondary"></span>
                     </button>
@@ -388,7 +385,7 @@
                                        hx:get="@{/yts/movies/{id}(id=${result.id()})}"
                                        hx-boost="true"
                                        hx-target="#search-results"
-                                       hx-swap="transition:true"
+                                       hx-swap="innerHTML transition:true"
                                        hx-push-url="true"
                                        hx-indicator=".globalProgress"
                                        th:text="${result.title_long}"></a>
@@ -414,7 +411,7 @@
 
                 <div class="tab-pane fade" id="movies" role="tabpanel" aria-labelledby="movies-tab"
                      hx-boost="true"
-                     hx-swap="transition:true">
+                     hx-swap="innerHTML transition:true">
 
                     <!--This is movies content-->
 
@@ -432,7 +429,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='mostwatched')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-indicator=".globalProgress"
                            hx-push-url="true">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -452,7 +449,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='latest')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-push-url="true"
                            hx-indicator=".globalProgress">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -472,7 +469,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='mostliked')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-push-url="true"
                            hx-indicator=".globalProgress">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -493,7 +490,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='imdbrating')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-push-url="true"
                            hx-indicator=".globalProgress">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -513,7 +510,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='latestcomedies')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-push-url="true"
                            hx-indicator=".globalProgress">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -533,7 +530,7 @@
                         <a hx:get="@{/yts/movies/cat/{category}(category='mustwatch')}"
                            hx-boost="true"
                            hx-target="#movies"
-                           hx-swap="transition:true"
+                           hx-swap="innerHTML transition:true"
                            hx-push-url="true"
                            hx-indicator=".globalProgress">
                             <i class="bi bi-chevron-compact-right" style="cursor: pointer"></i>
@@ -562,28 +559,28 @@
 
                     <h1 class="display-5 pt-3">Watchlist</h1>
 
-                    <div id="watchlist-content" hx-get="/watchlist" hx-trigger="click from:#watchlist-tab" hx-indicator=".globalProgress" hx-swap="transition:true">
+                    <div id="watchlist-content" hx-get="/watchlist" hx-trigger="click from:#watchlist-tab" hx-indicator=".globalProgress" hx-swap="innerHTML transition:true">
 
                     </div>
 
                 </div>
                 <div class="tab-pane fade" id="personalmedia" role="tabpanel" aria-labelledby="personalmedia-tab">
 
-                    <div id="personal-media" class="row" hx-get="/personal/media" hx-trigger="click from:#personalmedia-tab" hx-indicator=".globalProgress" hx-swap="transition:true">
+                    <div id="personal-media" class="row" hx-get="/personal/media" hx-trigger="click from:#personalmedia-tab" hx-indicator=".globalProgress" hx-swap="innerHTML transition:true">
 
                     </div>
 
                 </div>
-                <div class="tab-pane fade" id="playlist" role="tabpanel" aria-labelledby="playlist-tab">
+                <div class="tab-pane fade" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
 
-                    <div id="getDownloadForm" hx-get="/download/form" hx-trigger="click from:#playlist-tab" hx-indicator=".globalProgress" hx-swap="transition:true">
+                    <div id="getDownloadForm" hx-get="/download/form" hx-trigger="click from:#downloads-tab" hx-indicator=".globalProgress" hx-swap="innerHTML transition:true">
 
 
                     </div>
 
                     <h1 class="display-6">Download Queue</h1>
 
-                    <div id="getAllDownloads" hx-get="/download" hx-trigger="click from:#playlist-tab" hx-indicator=".globalProgress" hx-swap="transition:true">
+                    <div id="getAllDownloads" hx-get="/download" hx-trigger="click from:#downloads-tab" hx-indicator=".globalProgress" hx-swap="innerHTML transition:true">
 
                     </div>
 
@@ -592,13 +589,11 @@
 
             <footer class="d-flex flex-wrap justify-content-center align-items-center py-3 my-4">
                 <div class="col-md-4 d-flex align-items-center">
-                    <span class="mb-3 mb-md-0 text-body-secondary">© 2024 Akshath Sai, Pittala <a href="https://github.com/AkshathSai"><i class="bi bi-github"></i></a></span>
+                    <span class="mb-3 mb-md-0 text-body-secondary">© 2025 Akshath Sai, Pittala <a href="https://github.com/AkshathSai"><i class="bi bi-github"></i></a></span>
                 </div>
             </footer>
 
-        </div>
 
-    </div>
 </div>
 
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -623,8 +618,8 @@
 </script>
 <script>
     document.body.addEventListener('htmx:afterSwap', function (event) {
-        // Check if the updated content is the search results
-        if (event.detail.target.id === 'search-results') {
+        // First check if event.detail and event.detail.target exist
+        if (event.detail && event.detail.target && event.detail.target.id === 'search-results') {
             // Switch to the "Search" tab
             var searchTab = document.getElementById('home-tab');
             searchTab.click();

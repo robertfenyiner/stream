@@ -96,7 +96,7 @@
 
       <div class="col"
            hx:get="@{/yt/crawl/trailer/{movie}(movie=${ytsMovieRecord.data().movie().title_long()})}"
-           hx-swap="transition: true"
+           hx-swap="innerHTML transition:true"
            hx-trigger="load delay:100ms"
            hx-indicator=".globalProgress"
       ></div>
@@ -110,7 +110,7 @@
       <div class="col" th:each="movie: ${ytsSuggestedRecord.data.movies}">
 
         <div class="card h-100">
-          <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}" hx-indicator=".globalProgress" hx-boost="true" hx-target="#ytsMovieOverview" hx-swap="transition:true" hx-push-url="true">
+          <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}" hx-indicator=".globalProgress" hx-boost="true" hx-target="#ytsMovieOverview" hx-swap="innerHTML transition:true" hx-push-url="true">
             <img loading="lazy" th:src="@{${movie.medium_cover_image}}" th:alt="${movie.title_long}" class="card-img-top">
           </a>
         </div>
