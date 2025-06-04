@@ -25,4 +25,8 @@ public interface VideoRepository extends ListCrudRepository<Video, String> {
     @Transactional
     @Query("DELETE FROM Video v where v.name=:name")
     void deleteAllByName(@Param("name") String name);
+
+    // Add to VideoRepository interface
+    @Query("SELECT v.contentId FROM Video v")
+    List<String> findAllContentIds();
 }

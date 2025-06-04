@@ -10,7 +10,7 @@
                 <a th:text="${url.name}"
                    hx:post="@{/download/torrent/{torrentHash}(torrentHash=${url.info_hash})}"
                    hx-boost="true"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    hx-push-url="true"
                 ></a>
             </li>

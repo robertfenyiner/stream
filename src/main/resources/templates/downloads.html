@@ -41,12 +41,12 @@
             <div class="col fs-1 mb-3">
                 <a hx:post="@{/download/pause/{hashString}(hashString=${torrentHash})}"
                    hx-boost="true"
-                   hx-indicator=".globalProgress">
+                   hx-indicator=".htmx-indicator">
                     <i class="bi bi-pause"></i>
                 </a>
                 <a hx:get="@{/stream/video/{movieCode}(movieCode=${torrentHash})}"
                    hx-boost="true"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    hx-target="#poster">
                     <i class="bi bi-play"></i>
                 </a>
@@ -140,7 +140,7 @@
 
                 <!--<a hx:get="@{/stream/video/{contentId}(contentId=${task.torrentHash})}"
                    hx-target="#downloads-player"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    class="btn btn-primary btn-sm">
                     <i class="bi bi-play-fill"></i> Play
                 </a>-->
@@ -149,11 +149,11 @@
                     <div class="col fs-1 mb-3">
                         <a hx:post="@{/download/pause/{hashString}(hashString=${task.torrentHash})}"
                            hx-boost="true"
-                           hx-indicator=".globalProgress">
+                           hx-indicator=".htmx-indicator">
                             <i class="bi bi-pause"></i>
                         </a>
                         <a hx:get="@{/stream/video/{movieCode}(movieCode=${task.torrentHash})}"
-                           hx-indicator=".globalProgress"
+                           hx-indicator=".htmx-indicator"
                            hx-target="#downloads-player">
                             <i class="bi bi-play"></i>
                         </a>
@@ -161,7 +161,7 @@
                            hx-trigger="click"
                            hx-swap="delete"
                            hx-method="delete"
-                           hx-indicator=".globalProgress">
+                           hx-indicator=".htmx-indicator">
                             <i class="bi bi-trash3"></i>
                         </a>
                     </div>

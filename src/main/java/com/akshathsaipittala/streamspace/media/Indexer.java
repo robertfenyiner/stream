@@ -18,6 +18,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -100,56 +101,92 @@ public class Indexer {
                 });
     }
 
-    private CompletableFuture<List<Path>> findLocalMediaFiles(Set<String> locations) {
+    public CompletableFuture<List<Path>> findLocalMediaFiles(Set<String> locations) {
         final String pattern = "glob:**/*.{mp4,mpeg,mp3,mkv,flac}";
-
-        List<Path> matchingPaths = new ArrayList<>();
+        List<CompletableFuture<List<Path>>> futures = new ArrayList<>();
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher(pattern);
 
         for (String location : locations) {
-            try {
-                Path start = Paths.get(location);
-                if (Files.exists(start)) {
-                    Files.walkFileTree(start, new SimpleFileVisitor<>() {
-                        @Override
-                        public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                            if (matcher.matches(path)) {
-                                matchingPaths.add(path);
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                List<Path> matchingPaths = new ArrayList<>();
+                try {
+                    Path start = Paths.get(location);
+                    if (Files.exists(start)) {
+                        Files.walkFileTree(start, new SimpleFileVisitor<>() {
+                            @Override
+                            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                                if (matcher.matches(path)) {
+                                    matchingPaths.add(path);
+                                }
+                                return FileVisitResult.CONTINUE;
                             }
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
+                        });
+                    }
+                } catch (IOException e) {
+                    log.error("Error finding personal media files in location: {}", location, e);
                 }
-            } catch (IOException e) {
-                log.error("Error finding personal media files in location: {}", location, e);
-            }
+                return matchingPaths;
+            }));
         }
 
-        return CompletableFuture.completedFuture(matchingPaths);
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream()
+                        .flatMap(future -> future.join().stream())
+                        .toList());
     }
 
     private List<Path> filterPaths(List<Path> paths, String... extensions) {
+        Set<String> extensionSet = Set.of(extensions);
         return paths.parallelStream()
                 .filter(path -> {
                     String pathString = path.toString().toLowerCase();
-                    for (String ext : extensions) {
-                        if (pathString.endsWith(ext)) {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return extensionSet.stream().anyMatch(pathString::endsWith);
                 })
                 .toList();
     }
 
+    private List<Video> createVideoEntities(List<Path> paths) throws IOException {
+        Path userHomePath = Paths.get(ContentDirectoryServices.userHomePath);
+
+        return paths.parallelStream().map(entry -> {
+            try {
+                String encodedFileName = decodePathSegment.apply(entry.getFileName().toString());
+                Path relativePath = userHomePath.relativize(entry);
+
+                return new Video()
+                        .setName(encodedFileName)
+                        .setContentLength(Files.size(entry))
+                        .setSummary(entry.getFileName().toString())
+                        .setContentId(File.separator + decodePathSegment.apply(relativePath.toString()))
+                        .setContentMimeType(decodeContentType.apply(entry))
+                        .setMovieCode(encodedFileName)
+                        .setSource(SOURCE.LOCAL);
+            } catch (IOException e) {
+                log.error("Error creating video entity for {}", entry, e);
+                return null;
+            }
+        }).filter(video -> video != null).toList();
+    }
+
     private CompletableFuture<Void> saveVideosAsync(List<Video> videos) {
         return CompletableFuture.runAsync(() -> {
-            List<Video> nonExistingVideos = videos.stream()
-                    .filter(video -> !videoRepository.existsByContentId(video.getContentId()))
-                    .toList();
-            videoRepository.saveAll(nonExistingVideos);
-        }).thenRun(() -> log.info("Finished Indexing Videos"));
+            // Get all content IDs in one query
+            Set<String> existingContentIds = new HashSet<>();
+            videoRepository.findAllContentIds().forEach(existingContentIds::add);
 
+            List<Video> nonExistingVideos = videos.stream()
+                    .filter(video -> !existingContentIds.contains(video.getContentId()))
+                    .toList();
+
+            // Process in batches of 500
+            final int batchSize = 500;
+            for (int i = 0; i < nonExistingVideos.size(); i += batchSize) {
+                List<Video> batch = nonExistingVideos.subList(
+                    i, Math.min(i + batchSize, nonExistingVideos.size())
+                );
+                videoRepository.saveAll(batch);
+            }
+        }).thenRun(() -> log.info("Finished Indexing Videos"));
     }
 
     private CompletableFuture<Void> saveMusicAsync(List<Song> songs) {
@@ -159,36 +196,6 @@ public class Indexer {
                     .toList();
             musicRepository.saveAll(nonExistingSongs);
         }).thenRun(() -> log.info("Finished Indexing Music"));
-    }
-
-    private List<Video> createVideoEntities(List<Path> paths) throws IOException {
-        Video video = null;
-        List<Video> videos = new ArrayList<>();
-        String encodedFileName;
-        Path relativePath;
-
-        for (Path entry : paths) {
-            log.debug(entry.toString());
-            encodedFileName = decodePathSegment.apply(entry.getFileName().toString());
-
-            // Relativize the entry path against the user home directory
-            relativePath = Paths.get(ContentDirectoryServices.userHomePath).relativize(entry);
-
-            video = new Video()
-                    .setName(encodedFileName)
-                    .setContentLength(Files.size(entry))
-                    .setSummary(entry.getFileName().toString())
-                    .setContentId(File.separator + decodePathSegment.apply(relativePath.toString()))
-                    //.setContentId(decodePathSegment.apply(relativePath.toString()))
-                    .setContentMimeType(decodeContentType.apply(entry))
-                    //.setMovieCode(generateUniqueCode())
-                    .setMovieCode(encodedFileName)
-                    .setSource(SOURCE.LOCAL);
-
-            videos.add(video);
-        }
-
-        return videos;
     }
 
     private List<Song> createMusicEntities(List<Path> paths) throws IOException {

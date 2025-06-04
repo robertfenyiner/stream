@@ -7,6 +7,7 @@ import com.akshathsaipittala.streamspace.services.ContentDirectoryServices;
 import com.akshathsaipittala.streamspace.downloads.DownloadTask;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -19,8 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class TorrentDownloadManager {
 
-    public static final int BitTorrentPort = 6891;
-    private static final Map<String, TorrentClient> clients = new ConcurrentHashMap<>();
+    private final Map<String, TorrentClient> clients = new ConcurrentHashMap<>();
     final Downloads downloads;
     final Indexer indexer;
     final DownloadProgressHandler downloadProgressHandler;
@@ -59,6 +59,7 @@ public class TorrentDownloadManager {
         }
     }
 
+    @Async
     public void startAllPendingDownloads() {
         var downloadTasks = new ArrayList<>(downloads.findAll());
         if (!downloadTasks.isEmpty()) {
@@ -101,7 +102,7 @@ public class TorrentDownloadManager {
         options.setVerboseLogging(false);
         options.setTraceLogging(false);
         // options.setIface(null);
-        options.setPort(BitTorrentPort);
+        // options.setPort(BitTorrentPort);
         // options.setDhtPort(null);
         options.setDownloadAllFiles(true);
         log.info("{}", options);

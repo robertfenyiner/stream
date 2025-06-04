@@ -6,7 +6,7 @@
             <a hx:get="@{${item.itemUrl}}"
                hx-boost="true"
                hx-target="#watchlist-content"
-               hx-indicator=".globalProgress"
+               hx-indicator=".htmx-indicator"
                hx-push-url="true">
                 <img loading="lazy" th:src="@{${item.thumbnailUrl}}" th:alt="${item.name}" class="card-img-top">
             </a>
@@ -24,43 +24,49 @@
 
 </div>
 
-<input type="search"
-       class="form-control"
-       placeholder="YouTube Search"
-       aria-label="YouTube Search"
-       aria-describedby="basic-addon2"
-       id="youtube-search"
-       name="query"
-       hx-trigger="input changed delay:500ms, search"
-       hx-get="/yt/search"
-       hx-indicator=".globalProgress"
-       hx-target="#ytVideos"
-       hx-push-url="true"
-       autofocus
->
+<div class="search-container mx-auto position-relative pt-3">
+    <div class="input-group input-group-lg shadow-sm">
+        <input type="text" id="search-input" class="form-control"
+               placeholder="Search for YouTube videos..."
+               hx-get="/yt/search"
+               hx-trigger="keyup changed delay:250ms, search"
+               hx-target="#ytVideos"
+               hx-params="query"
+               name="query">
+        <button class="btn btn-primary" type="button" id="search-button"
+                hx-get="/yt/search"
+                hx-trigger="click"
+                hx-target="#ytVideos"
+                hx-include="#search-input">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
 
-<div id="ytVideos">
+    <div id="ytVideos">
 
-    <div th:fragment="ytVideos">
+        <div th:fragment="ytVideos">
 
-        <div id="ytPlayer" th:fragment="ytPlayer"></div>
+            <div id="ytPlayer" th:fragment="ytPlayer"></div>
 
-        <div class="card mb-3" style="max-width: 540px;" th:each="video : ${videos}">
-            <div class="row g-0"
-                 hx:get="@{/yt/watch/{v}(v=${video.url})}"
-                 hx-target="#ytPlayer">
-                <div class="col-md-4">
-                    <img th:src="${video.thumbnailUrl}" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${video.title}"></h5>
-                        <!--                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-                        <!--                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>-->
+            <div class="card mb-3" style="max-width: 540px;" th:each="video : ${videos}">
+                <div class="row g-0"
+                     hx:get="@{/yt/watch/{v}(v=${video.url})}"
+                     hx-target="#ytPlayer">
+                    <div class="col-md-4">
+                        <img th:src="${video.thumbnailUrl}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${video.title}"></h5>
+                            <!--                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
+                            <!--                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>-->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
+
 </div>
+

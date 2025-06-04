@@ -1,12 +1,11 @@
-<div th:fragment="ytsMostWatched" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsMostWatchedRecord.data().movies()}">
-
-    <div class="card h-100">
+<div th:fragment="ytsMostWatched" th:remove="tag" xmlns:hx="http://www.w3.org/1999/xhtml">
+  <div class="scroll-item" th:each="movie: ${ytsMostWatchedRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
          hx-swap="innerHTML transition:true"
+         hx-indicator=".htmx-indicator"
          hx-push-url="true">
         <img loading="lazy"
              class="card-img-top"
@@ -15,16 +14,12 @@
         />
       </a>
     </div>
-
   </div>
-
 </div>
 
 <div th:fragment="ytsLatest" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsLatestRecord.data().movies()}">
-
-    <div class="card h-100">
+  <div class="scroll-item" th:each="movie: ${ytsLatestRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
@@ -37,16 +32,12 @@
         />
       </a>
     </div>
-
   </div>
-
 </div>
 
 <div th:fragment="ytsMostLiked" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsMostLikedRecord.data().movies()}">
-
-    <div class="card h-100">
+  <div class="scroll-item" th:each="movie: ${ytsMostLikedRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
@@ -59,16 +50,12 @@
         />
       </a>
     </div>
-
   </div>
-
 </div>
 
 <div th:fragment="ytsImdbRating" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsIMDBHighestRatedRecord.data().movies()}">
-
-    <div class="card h-100">
+  <div class="scroll-item" th:each="movie: ${ytsIMDBHighestRatedRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
@@ -81,17 +68,12 @@
         />
       </a>
     </div>
-
   </div>
-
-
 </div>
 
 <div th:fragment="ytsLatestComedies" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsLatestComedyRecord.data().movies()}">
-
-    <div class="card h-100">
+  <div class="scroll-item" th:each="movie: ${ytsLatestComedyRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
@@ -104,16 +86,12 @@
         />
       </a>
     </div>
-
   </div>
-
 </div>
 
 <div th:fragment="ytsMustWatch" th:remove="tag">
-
-  <div class="col" th:each="movie: ${ytsMustWatchRecord.data().movies()}">
-
-    <div class="card h-100">
+  <div class="scroll-item" th:each="movie: ${ytsMustWatchRecord.data().movies()}">
+    <div class="card h-100 shadow-sm movie-card">
       <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}"
          hx-boost="true"
          hx-target="#movies"
@@ -126,11 +104,7 @@
         />
       </a>
     </div>
-
   </div>
-
-
-
 </div>
 
 <div th:fragment="msftfeatured" th:remove="tag">
@@ -320,7 +294,7 @@
           htmx.ajax('GET', `/search/yts?term=${encodeURIComponent(movieTitle)}`, {
             target: '#search-results',
             swap: 'innerHTML transition:true',
-            indicator: '.globalProgress',
+            indicator: '.htmx-indicator',
             pushUrl: true
           });
         }

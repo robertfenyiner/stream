@@ -2,18 +2,18 @@
 
     <div class="col">
 
-        <h3 class="display-6 pt-3 mb-3">
+        <!--<h3 class="display-6 pt-3 mb-3">
             Personal Media
             <small class="text-body-secondary" style="cursor: pointer">
                 <i class="bi bi-arrow-repeat"
                    data-toggle="tooltip"
                    title="Refresh"
                    hx-get="/refresh/personalmedia"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    hx-target="#personalMediaPlayer"
                    hx-swap="outerHTML"></i>
             </small>
-        </h3>
+        </h3>-->
 
         <div id="mini-player" class="row">
 
@@ -24,7 +24,7 @@
             <li th:each="video: ${videos}">
                 <a th:text="${video.name}"
                    hx:get="@{/stream/video/{movieCode}(movieCode=${#uris.escapePathSegment(video.movieCode)})}"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    hx-target="#mini-player"
                    hx-push-url="true"
                    style="cursor: pointer"
@@ -34,7 +34,7 @@
             <li th:each="music: ${music}">
                 <a th:text="${music.name}"
                    hx:get="@{/stream/music/{contentId}(contentId=${music.name})}"
-                   hx-indicator=".globalProgress"
+                   hx-indicator=".htmx-indicator"
                    hx-target="#mini-player"
                    hx-push-url="true"
                    style="cursor: pointer"
