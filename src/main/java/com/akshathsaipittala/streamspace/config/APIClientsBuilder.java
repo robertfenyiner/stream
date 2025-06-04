@@ -18,26 +18,24 @@ public class APIClientsBuilder {
     }
 
     @Bean
-    YTSAPIClient ytsapiClient(RestClient restClient) {
+    HttpServiceProxyFactory httpServiceProxyFactory(RestClient restClient) {
         return HttpServiceProxyFactory
                 .builderFor(RestClientAdapter.create(restClient))
-                .build()
-                .createClient(YTSAPIClient.class);
+                .build();
     }
 
     @Bean
-    APIBayClient apiBayClient(RestClient restClient) {
-        return HttpServiceProxyFactory
-                .builderFor(RestClientAdapter.create(restClient))
-                .build()
-                .createClient(APIBayClient.class);
+    YTSAPIClient ytsapiClient(HttpServiceProxyFactory factory) {
+        return factory.createClient(YTSAPIClient.class);
     }
 
     @Bean
-    MicrosoftStoreAPI microsoftStoreAPI(RestClient restClient) {
-        return HttpServiceProxyFactory
-                .builderFor(RestClientAdapter.create(restClient))
-                .build()
-                .createClient(MicrosoftStoreAPI.class);
+    APIBayClient apiBayClient(HttpServiceProxyFactory factory) {
+        return factory.createClient(APIBayClient.class);
+    }
+
+    @Bean
+    MicrosoftStoreAPI microsoftStoreAPI(HttpServiceProxyFactory factory) {
+        return factory.createClient(MicrosoftStoreAPI.class);
     }
 }
