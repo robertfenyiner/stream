@@ -1,7 +1,5 @@
-package com.akshathsaipittala.streamspace.www;
+package com.akshathsaipittala.streamspace.yt;
 
-import com.akshathsaipittala.streamspace.www.crawler.YouTubeResponseDTO;
-import com.akshathsaipittala.streamspace.www.crawler.YoutubeCrawler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

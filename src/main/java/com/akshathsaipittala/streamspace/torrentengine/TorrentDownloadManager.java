@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.torrentengine;
 
-import com.akshathsaipittala.streamspace.helpers.DOWNLOADTYPE;
-import com.akshathsaipittala.streamspace.media.Indexer;
+import com.akshathsaipittala.streamspace.common.DOWNLOADTYPE;
+import com.akshathsaipittala.streamspace.content.Indexer;
 import com.akshathsaipittala.streamspace.downloads.Downloads;
 import com.akshathsaipittala.streamspace.services.ContentDirectoryServices;
 import com.akshathsaipittala.streamspace.downloads.DownloadTask;

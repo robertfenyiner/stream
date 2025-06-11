@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.downloads;
 
-import com.akshathsaipittala.streamspace.helpers.CONTENTTYPE;
-import com.akshathsaipittala.streamspace.helpers.DOWNLOADTYPE;
+import com.akshathsaipittala.streamspace.common.CONTENTTYPE;
+import com.akshathsaipittala.streamspace.common.DOWNLOADTYPE;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

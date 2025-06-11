@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.www;
 
-import com.akshathsaipittala.streamspace.user.preferences.Preference;
-import com.akshathsaipittala.streamspace.user.preferences.UserPreferences;
+import com.akshathsaipittala.streamspace.preferences.Preference;
+import com.akshathsaipittala.streamspace.preferences.UserPreferences;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

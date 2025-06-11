@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.user.watchlist;
+package com.akshathsaipittala.streamspace.watchlist;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

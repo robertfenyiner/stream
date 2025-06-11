@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.media;
+package com.akshathsaipittala.streamspace.content;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

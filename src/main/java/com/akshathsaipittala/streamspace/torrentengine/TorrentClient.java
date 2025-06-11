@@ -29,7 +29,7 @@ import bt.runtime.Config;
 import bt.torrent.selector.PieceSelector;
 import bt.torrent.selector.RarestFirstSelector;
 import bt.torrent.selector.SequentialSelector;
-import com.akshathsaipittala.streamspace.media.Indexer;
+import com.akshathsaipittala.streamspace.content.Indexer;
 import com.google.inject.Module;
 import lombok.extern.slf4j.Slf4j;
 

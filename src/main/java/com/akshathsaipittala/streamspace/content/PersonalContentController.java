@@ -1,7 +1,5 @@
-package com.akshathsaipittala.streamspace.www;
+package com.akshathsaipittala.streamspace.content;
 
-import com.akshathsaipittala.streamspace.media.VideoRepository;
-import com.akshathsaipittala.streamspace.media.MusicRepository;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/personal")
 @RequiredArgsConstructor
-public class PersonalMediaController {
+public class PersonalContentController {
 
     final VideoRepository videoRepository;
     final MusicRepository musicRepository;

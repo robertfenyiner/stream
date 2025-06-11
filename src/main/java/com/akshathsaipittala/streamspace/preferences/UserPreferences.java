@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.user.preferences;
+package com.akshathsaipittala.streamspace.preferences;
 
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;

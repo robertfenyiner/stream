@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.www.clients;
+package com.akshathsaipittala.streamspace.www;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.www.clients;
+package com.akshathsaipittala.streamspace.www;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;

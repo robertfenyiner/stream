@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.www.crawler;
+package com.akshathsaipittala.streamspace.yt;
 
 import com.akshathsaipittala.streamspace.resilience.RetryService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

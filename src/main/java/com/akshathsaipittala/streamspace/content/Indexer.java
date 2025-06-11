@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.media;
+package com.akshathsaipittala.streamspace.content;
 
 import bt.metainfo.TorrentFile;
 import bt.metainfo.TorrentId;

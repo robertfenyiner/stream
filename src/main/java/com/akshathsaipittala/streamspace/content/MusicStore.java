@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.media;
+package com.akshathsaipittala.streamspace.content;
 
 import org.springframework.content.commons.store.ContentStore;
 import org.springframework.content.rest.StoreRestResource;

@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.user.preferences;
+package com.akshathsaipittala.streamspace.preferences;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

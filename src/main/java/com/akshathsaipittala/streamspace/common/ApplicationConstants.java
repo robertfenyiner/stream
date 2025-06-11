@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.helpers;
+package com.akshathsaipittala.streamspace.common;
 
 public final class ApplicationConstants {
 

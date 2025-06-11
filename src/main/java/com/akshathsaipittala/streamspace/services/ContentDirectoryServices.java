@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.services;
 
-import com.akshathsaipittala.streamspace.helpers.CONTENTTYPE;
-import com.akshathsaipittala.streamspace.helpers.ApplicationConstants;
+import com.akshathsaipittala.streamspace.common.CONTENTTYPE;
+import com.akshathsaipittala.streamspace.common.ApplicationConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.akshathsaipittala.streamspace.downloads;
 
-import com.akshathsaipittala.streamspace.helpers.CONTENTTYPE;
-import com.akshathsaipittala.streamspace.helpers.DOWNLOADTYPE;
+import com.akshathsaipittala.streamspace.common.CONTENTTYPE;
+import com.akshathsaipittala.streamspace.common.DOWNLOADTYPE;
 import com.akshathsaipittala.streamspace.torrentengine.TorrentDownloadManager;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;

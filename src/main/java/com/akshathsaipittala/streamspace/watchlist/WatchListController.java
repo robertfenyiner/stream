@@ -1,4 +1,4 @@
-package com.akshathsaipittala.streamspace.user.watchlist;
+package com.akshathsaipittala.streamspace.watchlist;
 
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;

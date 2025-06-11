@@ -1,8 +1,5 @@
-package com.akshathsaipittala.streamspace.www;
+package com.akshathsaipittala.streamspace.content;
 
-import com.akshathsaipittala.streamspace.media.Indexer;
-import com.akshathsaipittala.streamspace.media.VideoRepository;
-import com.akshathsaipittala.streamspace.media.MusicRepository;
 import com.akshathsaipittala.streamspace.services.ContentDirectoryServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
