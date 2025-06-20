@@ -82,6 +82,7 @@ public interface YTSAPIClient {
             String rating,
             String runtime,
             String[] genres,
+            String description_intro,
             String language,
             Object background_image,
             Object background_image_original,

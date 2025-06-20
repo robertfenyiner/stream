@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class YoutubeCrawler {
 
-    private static final Pattern polymerInitialDataRegex = Pattern.compile("(window\\[\"ytInitialData\"]|var ytInitialData)\\s*=\\s*(.*);");
+    private static final Pattern POLYMER_INITIAL_DATA_REGEX = Pattern.compile("(window\\[\"ytInitialData\"]|var ytInitialData)\\s*=\\s*(.*);");
 
     public YouTubeResponseDTO getYoutubeTrailersByTitle(String searchQuery) {
 
@@ -75,7 +75,7 @@ public class YoutubeCrawler {
             // String matcher0 = matcher.group(0);
             // String matcher1 = matcher.group(1);
             // String matcher2 = matcher.group(2);
-            Matcher matcher = polymerInitialDataRegex.matcher(document.html());
+            Matcher matcher = POLYMER_INITIAL_DATA_REGEX.matcher(document.html());
             if (!matcher.find()) {
                 log.warn("Failed to match ytInitialData JSON object");
             }

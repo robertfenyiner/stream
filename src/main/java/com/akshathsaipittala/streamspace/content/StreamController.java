@@ -1,6 +1,5 @@
-package com.akshathsaipittala.streamspace.www;
+package com.akshathsaipittala.streamspace.content;
 
-import com.akshathsaipittala.streamspace.content.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
