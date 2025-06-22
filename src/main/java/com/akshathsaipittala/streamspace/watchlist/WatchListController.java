@@ -20,8 +20,8 @@ public class WatchListController {
     @HxRequest
     @GetMapping("")
     public String getWatchList(Model model) {
-        model.addAttribute("watchlistitems", watchList.findAll());
-        return "watchlistitems";
+        model.addAttribute("watchListItems", watchList.findAll());
+        return "watchlistitems :: watchListSection";
     }
 
     @HxRequest

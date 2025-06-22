@@ -371,12 +371,6 @@
           </button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link d-flex align-items-center" id="watchlist-tab" data-bs-toggle="pill" data-bs-target="#watchlist" type="button" role="tab" aria-controls="watchlist" aria-selected="false">
-            <i class="bi bi-collection-play me-md-2"></i>
-            <span class="d-none d-md-inline">Watchlist</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
           <button class="nav-link d-flex align-items-center" id="personalmedia-tab" data-bs-toggle="pill" data-bs-target="#personalmedia" type="button" role="tab" aria-controls="personalmedia" aria-selected="false">
             <i class="bi bi-phone me-md-2"></i>
             <span class="d-none d-md-inline">Personal</span>
@@ -423,6 +417,11 @@
                hx-get="/microsoft/newreleases"
                hx-trigger="click from:#movies-tab"
                hx-indicator=".htmx-indicator">
+          </div>
+
+          <!-- WatchedList Section -->
+          <div hx-get="/watchlist" hx-trigger="load">
+
           </div>
 
           <!-- Most Watched Section -->
@@ -608,31 +607,6 @@
                  hx-get="/yts/ytsMustWatch"
                  hx-trigger="click from:#movies-tab"
                  hx-indicator=".htmx-indicator">
-            </div>
-          </div>
-        </div>
-
-        <!-- Watchlist Tab -->
-        <div class="tab-pane fade content-transition" id="watchlist" role="tabpanel" aria-labelledby="watchlist-tab">
-          <div class="d-flex align-items-center mb-4">
-            <h2 class="h3 mb-0">Your Watchlist</h2>
-            <div class="ms-auto">
-              <button class="btn btn-outline-primary btn-sm rounded-pill">
-                <i class="bi bi-sort-down me-2"></i> Sort
-              </button>
-            </div>
-          </div>
-
-          <div id="watchlist-content"
-               class="fade-me-in"
-               hx-get="/watchlist"
-               hx-trigger="click from:#watchlist-tab"
-               hx-indicator=".htmx-indicator"
-               hx-swap="innerHTML transition:true">
-            <div class="d-flex justify-content-center py-5">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
             </div>
           </div>
         </div>

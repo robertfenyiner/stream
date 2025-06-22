@@ -1,25 +1,44 @@
-<div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+<div th:fragment="watchListSection" th:remove="tag">
 
-    <div class="col" th:each="item: ${watchlistitems}" th:id="|list-item-${item.id}|">
-
-        <div class="card h-100">
-            <a hx:get="@{${item.itemUrl}}"
-               hx-boost="true"
-               hx-target="#watchlist-content"
-               hx-indicator=".htmx-indicator"
-               hx-push-url="true">
-                <img loading="lazy" th:src="@{${item.thumbnailUrl}}" th:alt="${item.name}" class="card-img-top">
-            </a>
-            <div class="card-footer">
-                <small>
-                    <a th:attr="hx-delete=@{/watchlist/{id}(id=${item.id})},hx-target=|#list-item-${item.id}|"
-                          hx-trigger="click"
-                          hx-swap="delete"
-                          hx-method="delete"><i class="bi bi-trash"></i></a>
-                </small>
+    <div th:if="${!watchListItems.isEmpty()}">
+        <div class="section-header">
+            <h2>Your Watchlist</h2>
+            <div class="ms-auto scroll-controls">
+                <button class="scroll-btn scroll-left" data-target="watchlist-container">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="scroll-btn scroll-right" data-target="watchlist-container">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
             </div>
         </div>
 
+        <div class="scroll-container" id="watchlist-container">
+            <div class="scroll-item" th:each="item: ${watchListItems}" th:id="|list-item-${item.id}|">
+                <div class="card h-100 shadow-sm movie-card">
+                    <a hx:get="@{${item.itemUrl}}"
+                       hx-boost="true"
+                       hx-target="#movies"
+                       hx-swap="innerHTML transition:true"
+                       hx-indicator=".htmx-indicator"
+                       hx-push-url="true">
+                        <img loading="lazy"
+                             class="card-img-top"
+                             th:src="@{${item.thumbnailUrl}}"
+                             th:alt="${item.name}"
+                        />
+                    </a>
+                    <div class="card-footer">
+                        <small>
+                            <a th:attr="hx-delete=@{/watchlist/{id}(id=${item.id})},hx-target=|#list-item-${item.id}|"
+                               hx-trigger="click"
+                               hx-swap="delete"
+                               hx-method="delete"><i class="bi bi-trash"></i></a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -69,4 +88,3 @@
     </div>
 
 </div>
-
