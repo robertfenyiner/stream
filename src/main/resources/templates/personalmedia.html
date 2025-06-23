@@ -1,48 +1,95 @@
 <div id="personalMediaPlayer" th:fragment="personalMediaPlayer">
-
-    <div class="col">
-
-        <!--<h3 class="display-6 pt-3 mb-3">
-            Personal Media
-            <small class="text-body-secondary" style="cursor: pointer">
-                <i class="bi bi-arrow-repeat"
-                   data-toggle="tooltip"
-                   title="Refresh"
-                   hx-get="/refresh/personalmedia"
-                   hx-indicator=".htmx-indicator"
-                   hx-target="#personalMediaPlayer"
-                   hx-swap="outerHTML"></i>
-            </small>
-        </h3>-->
-
-        <div id="mini-player" class="row">
-
-        </div>
-
-        <ul id="personal-media-files" th:fragment="personal-media-files" class="row text-left">
-
-            <li th:each="video: ${videos}">
-                <a th:text="${video.name}"
-                   hx:get="@{/stream/video/{movieCode}(movieCode=${#uris.escapePathSegment(video.movieCode)})}"
-                   hx-indicator=".htmx-indicator"
-                   hx-target="#mini-player"
-                   hx-push-url="true"
-                   style="cursor: pointer"
-                ></a>
-            </li>
-
-            <li th:each="music: ${music}">
-                <a th:text="${music.name}"
-                   hx:get="@{/stream/music/{contentId}(contentId=${music.name})}"
-                   hx-indicator=".htmx-indicator"
-                   hx-target="#mini-player"
-                   hx-push-url="true"
-                   style="cursor: pointer"
-                ></a>
-            </li>
-
-        </ul>
-
+    <!-- Mini Player Section -->
+    <div id="mini-player" class="mt-4">
+        <!-- Content will be loaded here via HTMX -->
     </div>
+
+  <!-- Videos Section -->
+  <div class="mb-4">
+    <div class="section-header">
+      <h2>Videos</h2>
+      <div class="ms-auto">
+        <span class="badge bg-primary rounded-pill" th:text="${#lists.size(videos)}">0</span>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div th:each="video: ${videos}" class="col-md-6 col-lg-4">
+        <div class="card shadow-sm hover-scale h-100">
+          <div class="card-body d-flex align-items-center">
+            <i class="bi bi-film fs-3 me-3 text-primary"></i>
+            <div class="text-truncate w-100">
+              <h5 class="card-title mb-1 text-truncate" th:text="${video.name}" th:title="${video.name}">Video Name</h5>
+              <p class="card-text text-body-secondary mb-0">
+                <small class="text-truncate d-inline-block" style="max-width: 180px;"
+                      th:text="${video.movieCode}"
+                      th:title="${video.movieCode}">Path</small>
+              </p>
+            </div>
+            <a class="ms-auto btn btn-sm btn-outline-primary rounded-circle"
+               hx:get="@{/stream/video/{movieCode}(movieCode=${#uris.escapePathSegment(video.movieCode)})}"
+               hx-indicator=".htmx-indicator"
+               hx-target="#mini-player"
+               hx-push-url="true">
+              <i class="bi bi-play-fill"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${#lists.isEmpty(videos)}" class="col-12">
+        <div class="card border-0 text-center p-5 bg-transparent">
+          <div class="card-body">
+            <i class="bi bi-film fs-1 text-body-secondary mb-3"></i>
+            <h5 class="text-body-secondary">No videos available</h5>
+            <p class="text-body-secondary">Add videos to your personal collection to see them here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music Section -->
+  <div>
+    <div class="section-header">
+      <h2>Music</h2>
+      <div class="ms-auto">
+        <span class="badge bg-info rounded-pill" th:text="${#lists.size(music)}">0</span>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div th:each="music: ${music}" class="col-md-6 col-lg-4">
+        <div class="card shadow-sm hover-scale h-100">
+          <div class="card-body d-flex align-items-center">
+            <i class="bi bi-music-note-beamed fs-3 me-3 text-info"></i>
+            <div class="text-truncate w-100">
+              <h5 class="card-title mb-1 text-truncate" th:text="${music.name}" th:title="${music.name}">Music Title</h5>
+              <p class="card-text text-body-secondary mb-0">
+                <small>Audio File</small>
+              </p>
+            </div>
+            <a class="ms-auto btn btn-sm btn-outline-info rounded-circle"
+               hx:get="@{/stream/music/{contentId}(contentId=${music.name})}"
+               hx-indicator=".htmx-indicator"
+               hx-target="#mini-player"
+               hx-push-url="true">
+              <i class="bi bi-play-fill"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${#lists.isEmpty(music)}" class="col-12">
+        <div class="card border-0 text-center p-5 bg-transparent">
+          <div class="card-body">
+            <i class="bi bi-music-note-beamed fs-1 text-body-secondary mb-3"></i>
+            <h5 class="text-body-secondary">No music available</h5>
+            <p class="text-body-secondary">Add music to your personal collection to see it here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

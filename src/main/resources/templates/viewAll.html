@@ -1,40 +1,111 @@
 <div th:fragment="gallery" th:remove="tag">
+    <div id="movie-gallery" class="container-fluid py-4">
+        <!-- Header with title and filters -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" th:text="${category}"></h2>
 
-    <div id="movie-gallery" class="container mt-5">
+            <div class="d-flex gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Sort By
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Latest</a></li>
+                        <li><a class="dropdown-item" href="#">Rating</a></li>
+                        <li><a class="dropdown-item" href="#">Title</a></li>
+                    </ul>
+                </div>
 
-        <h1 class="mb-4" th:text="${category}"></h1>
-
-        <!-- Pagination -->
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" th:classappend="${currentPage <= 1} ? 'disabled' : ''" hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage - 1}" tabindex="-1" hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies" hx-swap="innerHTML transition:true" hx-push-url="true">Previous</a></li>
-                <li class="page-item"><a class="page-link" th:text="${currentPage}"></a></li>
-                <li class="page-item"><a class="page-link" hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage + 1}" hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies" hx-swap="innerHTML transition:true" hx-push-url="true">Next</a></li>
-            </ul>
-        </nav>
-
-        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
-            <!-- Dynamic movie cards will go here -->
-            <!-- Example of a single movie card -->
-            <div class="col" th:each="movie: ${ytsMoviesRecord.data.movies}">
-                <div class="card h-100">
-                    <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}" hx-indicator=".htmx-indicator" hx-boost="true" hx-target="#movies" hx-swap="innerHTML transition:true" hx-push-url="true">
-                        <img th:src="@{${movie.large_cover_image}}" th:alt="${movie.title_long}" class="card-img-top">
-                    </a>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">All</a></li>
+                        <li><a class="dropdown-item" href="#">720p</a></li>
+                        <li><a class="dropdown-item" href="#">1080p</a></li>
+                        <li><a class="dropdown-item" href="#">4K</a></li>
+                    </ul>
                 </div>
             </div>
-            <!-- Repeat movie cards for each movie -->
         </div>
 
-        <!-- Pagination -->
-        <nav aria-label="Page navigation" class="mt-4">
+        <!-- Pagination - Top -->
+        <nav aria-label="Page navigation" class="mb-4">
             <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" th:classappend="${currentPage <= 1} ? 'disabled' : ''" hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage - 1}" tabindex="-1" hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies" hx-swap="innerHTML transition:true" hx-push-url="true">Previous</a></li>
+                <li class="page-item">
+                    <a class="page-link rounded-start" th:classappend="${currentPage <= 1} ? 'disabled' : ''"
+                       hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage - 1}"
+                       hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies"
+                       hx-swap="innerHTML transition:true" hx-push-url="true">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
                 <li class="page-item"><a class="page-link" th:text="${currentPage}"></a></li>
-                <li class="page-item"><a class="page-link" hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage + 1}" hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies" hx-swap="innerHTML transition:true" hx-push-url="true">Next</a></li>
+                <li class="page-item">
+                    <a class="page-link rounded-end"
+                       hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage + 1}"
+                       hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies"
+                       hx-swap="innerHTML transition:true" hx-push-url="true">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
             </ul>
         </nav>
 
-    </div>
+        <!-- Loading indicator -->
+        <div class="htmx-indicator text-center py-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
 
+        <!-- Movie grid -->
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+            <div class="col" th:each="movie: ${ytsMoviesRecord.data.movies}">
+                <div class="card h-100 shadow-sm border-0 hover-scale">
+                    <div class="position-relative">
+                        <a hx:get="@{/yts/movies/{id}(id=${movie.id()})}" hx-indicator=".htmx-indicator"
+                           hx-boost="true" hx-target="#movies" hx-swap="innerHTML transition:true"
+                           hx-push-url="true">
+                            <img th:src="@{${movie.large_cover_image}}" th:alt="${movie.title_long}"
+                                 class="card-img-top rounded-top" loading="lazy">
+                            <div class="movie-overlay position-absolute top-0 start-0 w-100 h-100 d-flex
+                                      align-items-center justify-content-center">
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-primary rounded-pill"
+                                      th:if="${movie.rating}" th:text="${movie.rating}"></span>
+                                <span class="btn btn-light btn-sm rounded-pill">View Details</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text small text-muted" th:if="${movie.year}" th:text="${movie.year}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination - Bottom -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link rounded-start" th:classappend="${currentPage <= 1} ? 'disabled' : ''"
+                       hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage - 1}"
+                       hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies"
+                       hx-swap="innerHTML transition:true" hx-push-url="true">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" th:text="${currentPage}"></a></li>
+                <li class="page-item">
+                    <a class="page-link rounded-end"
+                       hx:get="'/yts/movies/cat/' + ${category} + '?page=' + ${currentPage + 1}"
+                       hx-boost="true" hx-indicator=".htmx-indicator" hx-target="#movies"
+                       hx-swap="innerHTML transition:true" hx-push-url="true">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>

@@ -304,6 +304,38 @@
     [data-bs-theme="dark"] .card {
       background-color: rgb(10, 10, 10); /* Near pitch black for cards */
     }
+
+    /* Movie card hover effects */
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .movie-overlay {
+        opacity: 0;
+        background: rgba(0,0,0,0.5);
+        transition: opacity 0.3s ease;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .card:hover .movie-overlay {
+        opacity: 1;
+    }
+
+    /* Smooth transitions for HTMX */
+    .htmx-swapping {
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .htmx-settling {
+        opacity: 1;
+        transition: opacity 0.3s ease-in;
+    }
   </style>
 </head>
 
