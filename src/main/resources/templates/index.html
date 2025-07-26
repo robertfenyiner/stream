@@ -351,12 +351,12 @@
     <header class="app-header py-3">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-auto d-none d-lg-block">
+          <!--<div class="col-auto d-none d-lg-block">
             <div class="d-flex align-items-center">
               <span class="fs-4 fw-bold me-2">🎞️</span>
               <h1 class="h5 mb-0 fw-bold">Stream Space</h1>
             </div>
-          </div>
+          </div>-->
 
           <div class="col">
             <div class="search-container">
@@ -445,11 +445,12 @@
         <!-- Movies Tab -->
         <div class="tab-pane fade content-transition" id="movies" role="tabpanel" aria-labelledby="movies-tab">
           <!-- Featured content -->
+          <!-- Disabled for now, can be enabled later as Microsoft discontinued Movies API
           <div class="featured-wrapper"
                hx-get="/microsoft/newreleases"
                hx-trigger="click from:#movies-tab"
                hx-indicator=".htmx-indicator">
-          </div>
+          </div>-->
 
           <!-- WatchedList Section -->
           <div hx-get="/watchlist" hx-trigger="load">
