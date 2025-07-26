@@ -11,6 +11,10 @@ import java.util.Date;
 @HttpExchange("https://apps.microsoft.com/api/Reco/GetMovieProductsList?gl=US&hl=en-us&listName=")
 public interface MicrosoftStoreAPI {
 
+    /** Sample URL
+     *  https://apps.microsoft.com/api/Reco/GetMovieProductsList?gl=US&hl=en-us&listName=video.newreleases.movies&pgNo=1&noItems=24&mediaType=movies&filteredCategories=AllProducts&studioFilter=
+     */
+
     @GetExchange("video.newreleases.movies&pgNo={pgNo}&noItems={noItems}&mediaType={mediaType}&filteredCategories={filteredCategories}&studioFilter=")
     MicrosoftStoreRecord newReleases(@PathVariable(value = "pgNo") int pgNo,
                                      @PathVariable(value = "noItems") int noItems,
