@@ -74,11 +74,10 @@ public interface UNIT3DAPIClient {
     @GetExchange("torrents/filter?free=1&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse getFreeleechTorrents(@PathVariable int page, @PathVariable int perPage);
 
-    // Data Transfer Objects (DTOs)
+    // Data Transfer Objects (DTOs) - Adaptados para LAT-Team
     
     record UNIT3DTorrentsResponse(
-        UNIT3DTorrentData data,
-        UNIT3DPagination meta
+        List<UNIT3DTorrent> data
     ) {}
 
     record UNIT3DTorrentDetailsResponse(
@@ -101,50 +100,30 @@ public interface UNIT3DAPIClient {
     ) {}
 
     record UNIT3DTorrent(
-        int id,
+        String type,
+        String id,
+        UNIT3DTorrentAttributes attributes
+    ) {}
+
+    record UNIT3DTorrentAttributes(
+        UNIT3DTorrentMeta meta,
         String name,
-        String info_hash,
-        long size,
-        int seeders,
-        int leechers,
-        int times_completed,
-        String created_at,
-        String updated_at,
-        boolean featured,
-        boolean free,
-        boolean doubleup,
-        UNIT3DCategory category,
-        UNIT3DType type,
-        UNIT3DResolution resolution,
-        String download_link,
-        String imdb,
-        String tmdb,
-        double rating
+        String release_year,
+        String category,
+        String type,
+        String resolution,
+        String media_info
+    ) {}
+
+    record UNIT3DTorrentMeta(
+        String poster,
+        String genres
     ) {}
 
     record UNIT3DTorrentDetails(
-        int id,
-        String name,
-        String info_hash,
-        String description,
-        long size,
-        int seeders,
-        int leechers,
-        int times_completed,
-        String created_at,
-        String updated_at,
-        boolean featured,
-        boolean free,
-        boolean doubleup,
-        UNIT3DCategory category,
-        UNIT3DType type,
-        UNIT3DResolution resolution,
-        String download_link,
-        String imdb,
-        String tmdb,
-        double rating,
-        List<UNIT3DFile> files,
-        UNIT3DMediaInfo mediainfo
+        String type,
+        String id,
+        UNIT3DTorrentAttributes attributes
     ) {}
 
     record UNIT3DCategory(
