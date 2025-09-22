@@ -19,6 +19,9 @@ target/
 *.iml
 *.ipr
 
+### VS Code ###
+.vscode/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -29,5 +32,19 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+### Mac OS ###
+.DS_Store
+
+### Database files ###
+data/
+*.mv.db
+*.trace.db
+*.h2.db
+
+### Logs ###
+*.log
+app.log
+
+### Backup files ###
+*.bak
+temp_backup/

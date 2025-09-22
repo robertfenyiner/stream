@@ -1,144 +1,60 @@
-<div th:fragment="videoPlayer" th:remove="tag">
-    <div class="container-fluid p-4">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LatStream - Reproductor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-film"></i> LatStream
+            </a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Volver al Inicio</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-12 col-lg-10">
-                
-                <!-- Video Info -->
-                <div class="mb-3" th:if="${video}">
-                    <h4 th:text="${video.name}">Nombre del Video</h4>
-                    <p class="text-muted mb-2">
-                        <i class="bi bi-play-circle"></i> Streaming desde LAT-Team
-                    </p>
-                </div>
-                
-                <!-- Video Player -->
-                <div class="ratio ratio-16x9 mb-4">
-                    <video 
-                        class="bg-black rounded shadow-lg" 
-                        controls
-                        autoplay
-                        preload="metadata"
-                        crossorigin="anonymous">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="bi bi-play-circle"></i> Reproductor LatStream</h4>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${torrentId}">
+                            <div class="alert alert-info">
+                                <h5>Preparando reproducción...</h5>
+                                <p>Torrent ID: <span th:text="${torrentId}"></span></p>
+                                <p>El streaming directo estará disponible próximamente. Por ahora, descarga el archivo torrent y úsalo en tu cliente favorito.</p>
+                            </div>
+                        </div>
                         
-                        <!-- Primary video source via Spring Content -->
-                        <source 
-                            th:src="@{'/videos/' + ${movieCode} + '/content'}" 
-                            th:type="${contentMimeType ?: 'video/mp4'}">
-                        
-                        <!-- Fallback source -->
-                        <source 
-                            th:src="@{'/videos/' + ${movieCode}}" 
-                            th:type="${contentMimeType ?: 'video/mp4'}">
-                        
-                        <p class="text-center p-4">
-                            Tu navegador no soporta la reproducción de video HTML5.
-                            <br>
-                            <a th:href="${video?.latTeamUrl}" class="btn btn-primary mt-2" target="_blank" th:if="${video?.latTeamUrl}">
-                                <i class="bi bi-download"></i> Descargar desde LAT-Team
-                            </a>
-                        </p>
-                    </video>
-                </div>
-                
-                <!-- Controls and Info -->
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="d-flex gap-2 mb-3">
-                            <button class="btn btn-outline-light btn-sm" onclick="document.querySelector('video').requestFullscreen()">
-                                <i class="bi bi-fullscreen"></i> Pantalla Completa
-                            </button>
-                            <button class="btn btn-outline-light btn-sm" onclick="toggleMute()">
-                                <i class="bi bi-volume-up"></i> Silenciar
-                            </button>
-                            <a th:href="${video?.latTeamUrl}" class="btn btn-outline-primary btn-sm" target="_blank" th:if="${video?.latTeamUrl}">
-                                <i class="bi bi-box-arrow-up-right"></i> Ver en LAT-Team
-                            </a>
+                        <div th:unless="${torrentId}">
+                            <div class="text-center">
+                                <i class="bi bi-camera-video" style="font-size: 4rem; color: #6c757d;"></i>
+                                <h4 class="mt-3">Reproductor LatStream</h4>
+                                <p class="text-muted">Selecciona contenido desde la búsqueda para reproducir</p>
+                                <a href="/" class="btn btn-primary">
+                                    <i class="bi bi-search"></i> Buscar Contenido
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 text-md-end">
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle"></i> 
-                            Streaming directo de torrent
-                        </small>
-                    </div>
                 </div>
-                
-                <!-- Back Navigation -->
-                <div class="mt-4">
-                    <a href="/" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Volver a Búsqueda
-                    </a>
-                </div>
-                
             </div>
         </div>
     </div>
-</div>
 
-<div th:fragment="musicPlayer" th:remove="tag">
-
-    <div class="fade-me-in" hx-swap="outerHTML settle:1s">
-        <p class="display-6 text-muted">Now Playing</p>
-        <audio class="img-fluid shadow-lg" th:src="@{'/music/' + ${contentId} + '/content'}" controls></audio>
-    </div>
-
-</div>
-
-<script>
-// Video player utilities
-function toggleMute() {
-    const video = document.querySelector('video');
-    if (video) {
-        video.muted = !video.muted;
-        const icon = document.querySelector('.bi-volume-up, .bi-volume-mute');
-        if (icon) {
-            icon.className = video.muted ? 'bi bi-volume-mute' : 'bi bi-volume-up';
-        }
-    }
-}
-
-// Video error handling and progress monitoring
-document.addEventListener('DOMContentLoaded', function() {
-    const video = document.querySelector('video');
-    if (video) {
-        // Error handling
-        video.addEventListener('error', function(e) {
-            console.error('Video error:', e);
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'alert alert-warning mt-3';
-            errorMsg.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Hubo un problema cargando el video. El contenido se está descargando...';
-            video.parentNode.appendChild(errorMsg);
-        });
-        
-        // Loading events
-        video.addEventListener('loadstart', function() {
-            console.log('Video loading started');
-        });
-        
-        video.addEventListener('canplay', function() {
-            console.log('Video can start playing');
-        });
-        
-        video.addEventListener('progress', function() {
-            if (video.buffered.length > 0) {
-                const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-                const duration = video.duration;
-                if (duration > 0) {
-                    const bufferedPercent = (bufferedEnd / duration) * 100;
-                    console.log('Buffered:', bufferedPercent.toFixed(1) + '%');
-                }
-            }
-        });
-        
-        // Waiting event (buffering)
-        video.addEventListener('waiting', function() {
-            console.log('Video buffering...');
-        });
-        
-        // Can play through event
-        video.addEventListener('canplaythrough', function() {
-            console.log('Video can play through without interruption');
-        });
-    }
-});
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
