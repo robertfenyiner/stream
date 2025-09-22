@@ -1,0 +1,16 @@
+package robertfenyiner.latstream.www;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("darkmodeenabled", false);
+        model.addAttribute("title", "LatStream - LAT-Team Private Tracker Interface");
+        return "index";
+    }
+}
