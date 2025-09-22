@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>UNIT3D Results</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; background: #181818; color: #eee; }
+        h1 { color: #00bfff; }
+        .torrent-list { list-style: none; padding: 0; }
+        .torrent-item { background: #232323; margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .torrent-title { font-size: 1.2em; font-weight: bold; }
+        .torrent-meta { font-size: 0.95em; color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>Resultados de LAT-Team (UNIT3D)</h1>
+    <div th:if="${torrents != null}">
+        <ul class="torrent-list">
+            <li th:each="torrent : ${torrents}" class="torrent-item">
+                <div class="torrent-title" th:text="${torrent.attributes.name}">Nombre</div>
+                <div class="torrent-meta">
+                    <span th:text="${torrent.attributes.category}">Categoría</span> |
+                    <span th:text="${torrent.attributes.resolution}">Resolución</span> |
+                    <span th:text="${torrent.attributes.release_year}">Año</span> |
+                    <span th:text="${torrent.attributes.seeders}">Seeders</span> |
+                    <span th:text="${torrent.attributes.leechers}">Leechers</span>
+                </div>
+                <div th:if="${torrent.attributes.meta != null}">
+                    <img th:src="${torrent.attributes.meta.poster}" alt="Poster" style="max-height:120px; margin-top:10px; border-radius:4px;"/>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${torrents == null || #lists.isEmpty(torrents)}">
+        <p>No hay resultados para mostrar.</p>
+    </div>
+</body>
+</html>
