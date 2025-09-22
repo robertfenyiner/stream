@@ -3,7 +3,6 @@ package com.robertfenyiner.latstream.config;
 import com.robertfenyiner.latstream.www.APIBayClient;
 import com.robertfenyiner.latstream.www.MicrosoftStoreAPI;
 import com.robertfenyiner.latstream.www.UNIT3DAPIClient;
-import com.robertfenyiner.latstream.www.YTSAPIClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -45,11 +44,6 @@ public class APIClientsBuilder {
         return HttpServiceProxyFactory
                 .builderFor(RestClientAdapter.create(unit3dRestClient))
                 .build();
-    }
-
-    @Bean
-    YTSAPIClient ytsapiClient(@Qualifier("default") HttpServiceProxyFactory factory) {
-        return factory.createClient(YTSAPIClient.class);
     }
 
     @Bean
