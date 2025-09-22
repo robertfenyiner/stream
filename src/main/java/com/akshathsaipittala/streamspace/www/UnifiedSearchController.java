@@ -96,37 +96,7 @@ public class UnifiedSearchController {
         }
     }
 
-    // Legacy YTS endpoints for backward compatibility
-    @GetMapping("/yts")
-    public String ytsSearch(@RequestParam("term") String term, Model model) {
-        log.info("Legacy YTS search for: {}", term);
-        Optional<Preference> darkModePreference = userPreferences.findById(1);
-        boolean darkModeEnabled = darkModePreference.map(Preference::isEnabled).orElse(false);
-        model.addAttribute("darkmodeenabled", darkModeEnabled);
-        
-        if(term == null) {
-            return "";
-        } else {
-            model.addAttribute("results", ytsapiClient.ytsSearchV2(term).data());
-            return "index";
-        }
-    }
-
-    @HxRequest
-    @GetMapping("/yts")
-    public String ytsSearchAsync(@RequestParam("term") String term, Model model) {
-        log.info("Legacy YTS async search for: {}", term);
-        Optional<Preference> darkModePreference = userPreferences.findById(1);
-        boolean darkModeEnabled = darkModePreference.map(Preference::isEnabled).orElse(false);
-        model.addAttribute("darkmodeenabled", darkModeEnabled);
-        
-        if(term == null) {
-            return "";
-        } else {
-            model.addAttribute("results", ytsapiClient.ytsSearchV2(term).data());
-            return "index :: search-results";
-        }
-    }
+    // Note: Legacy YTS endpoints are handled by SearchController to avoid conflicts
 
     // UNIT3D specific endpoints
     @GetMapping("/unit3d/latest")
