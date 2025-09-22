@@ -15,7 +15,7 @@ import java.util.List;
  * Replace the base URL with your tracker's domain.
  */
 @HttpExchange(
-    url = "${unit3d.api.base-url}/api/", 
+    url = "https://lat-team.com/api/", 
     accept = MediaType.APPLICATION_JSON_VALUE, 
     contentType = MediaType.APPLICATION_JSON_VALUE
 )
