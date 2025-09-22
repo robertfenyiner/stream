@@ -1,69 +1,220 @@
-package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
+package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
 
 
 
-import com.robertfenyiner.latstream.preferences.Preference;
+import lombok.extern.slf4j.Slf4j;
 
-import com.robertfenyiner.latstream.preferences.UserPreferences;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import com.robertfenyiner.latstream.preferences.Preference;
-
-import lombok.RequiredArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;import com.robertfenyiner.latstream.preferences.UserPreferences;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.stereotype.Controller;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import com.robertfenyiner.latstream.preferences.Preference;import com.robertfenyiner.latstream.preferences.Preference;
+import org.springframework.stereotype.Controller;import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.GetMapping;import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;import lombok.extern.slf4j.Slf4j;import com.robertfenyiner.latstream.preferences.UserPreferences;import com.robertfenyiner.latstream.preferences.UserPreferences;
+import org.springframework.web.bind.annotation.*;import org.springframework.beans.factory.annotation.Autowired;
 
 
 
-import java.util.Optional;import org.springframework.beans.factory.annotation.Value;
-
-
-
-/**import org.springframework.stereotype.Controller;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
-
- * Search Controller for LAT-Team private tracker using UNIT3D API
-
- */import org.springframework.ui.Model;
-
-@Slf4j
-
-@Controllerimport org.springframework.web.bind.annotation.GetMapping;import lombok.RequiredArgsConstructor;import lombok.RequiredArgsConstructor;
+@Controllerimport org.springframework.stereotype.Controller;import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/search")
 
-@RequiredArgsConstructorimport org.springframework.web.bind.annotation.RequestMapping;
+@Slf4jimport org.springframework.ui.Model;
 
 public class UnifiedSearchController {
 
-import org.springframework.web.bind.annotation.RequestParam;import lombok.extern.slf4j.Slf4j;import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;import org.springframework.beans.factory.annotation.Autowired;
 
-    private final Optional<UNIT3DAPIClient> unit3dAPIClient;
+    @GetMapping("/latteam")
 
-    private final UserPreferences userPreferences;
+    public String latteamSearch(@RequestParam(value = "term") String term, Model model) {import robertfenyiner.latstream.content.Indexer;
+
+        log.info("Searching LAT-Team for: {}", term);
+
+        import robertfenyiner.latstream.preferences.UserPreferences;import org.springframework.stereotype.Controller;import com.robertfenyiner.latstream.preferences.Preference;
+
+        model.addAttribute("searchTerm", term);
+
+        model.addAttribute("searchProvider", "LAT-Team");import robertfenyiner.latstream.services.UNIT3DAPIClient;
+
+        return "unit3d";
+
+    }import org.springframework.ui.Model;
+
+}
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.web.bind.annotation.*;import com.robertfenyiner.latstream.preferences.UserPreferences;
+
+@Controller
+
+@RequestMapping("/search")import robertfenyiner.latstream.content.Indexer;
+
+@Slf4j
+
+public class UnifiedSearchController {import robertfenyiner.latstream.preferences.UserPreferences;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import com.robertfenyiner.latstream.preferences.Preference;
 
 
 
-    @Value("${unit3d.api.enabled:false}")import java.util.Optional;import org.springframework.beans.factory.annotation.Value;import org.springframework.beans.factory.annotation.Value;
+    @Autowiredimport robertfenyiner.latstream.services.UNIT3DAPIClient;
 
-    private boolean unit3dEnabled;
+    private UNIT3DAPIClient unit3dApiClient;
+
+import lombok.RequiredArgsConstructor;
+
+    @Autowired
+
+    private UserPreferences userPreferences;import java.util.concurrent.CompletableFuture;
 
 
 
-    @GetMapping("/torrents")
+    @Autowiredimport lombok.extern.slf4j.Slf4j;import com.robertfenyiner.latstream.preferences.UserPreferences;
 
-    public String searchTorrents(@RequestParam("term") String term, Model model) {/**import org.springframework.stereotype.Controller;import org.springframework.stereotype.Controller;
+    private Indexer indexer;
 
+@Controller
+
+    @GetMapping("/latteam")
+
+    public String latteamSearch(@RequestParam(value = "term") String term, Model model) {@RequestMapping("/search")import org.springframework.beans.factory.annotation.Value;
+
+        log.info("Searching LAT-Team for: {}", term);
+
+        @Slf4j
+
+        try {
+
+            var results = unit3dApiClient.searchTorrents(term);public class UnifiedSearchController {import org.springframework.stereotype.Controller;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import com.robertfenyiner.latstream.preferences.Preference;import com.robertfenyiner.latstream.preferences.Preference;
+
+            model.addAttribute("movies", results);
+
+            model.addAttribute("searchTerm", term);
+
+            model.addAttribute("searchProvider", "LAT-Team");
+
+            return "unit3d";    @Autowiredimport org.springframework.ui.Model;
+
+        } catch (Exception e) {
+
+            log.error("Error searching LAT-Team: {}", e.getMessage());    private UNIT3DAPIClient unit3dApiClient;
+
+            model.addAttribute("error", "Error connecting to LAT-Team");
+
+            model.addAttribute("searchTerm", term);import org.springframework.web.bind.annotation.GetMapping;import lombok.RequiredArgsConstructor;
+
+            return "unit3d";
+
+        }    @Autowired
+
+    }
+
+    private UserPreferences userPreferences;import org.springframework.web.bind.annotation.RequestMapping;
+
+    @GetMapping("/latteam/async")
+
+    @ResponseBody
+
+    public CompletableFuture<String> latteamSearchAsync(@RequestParam(value = "term") String term, Model model) {
+
+        return CompletableFuture.supplyAsync(() -> {    @Autowiredimport org.springframework.web.bind.annotation.RequestParam;import lombok.extern.slf4j.Slf4j;import com.robertfenyiner.latstream.preferences.UserPreferences;import com.robertfenyiner.latstream.preferences.UserPreferences;
+
+            log.info("Async searching LAT-Team for: {}", term);
+
+                private Indexer indexer;
+
+            try {
+
+                var results = unit3dApiClient.searchTorrents(term);
+
+                model.addAttribute("movies", results);
+
+                model.addAttribute("searchTerm", term);    @GetMapping("/latteam")
+
+                model.addAttribute("searchProvider", "LAT-Team");
+
+                return "unit3d";    public String latteamSearch(@RequestParam(value = "term") String term, Model model) {import java.util.Optional;import org.springframework.beans.factory.annotation.Value;
+
+            } catch (Exception e) {
+
+                log.error("Error async searching LAT-Team: {}", e.getMessage());        log.info("Searching LAT-Team for: {}", term);
+
+                model.addAttribute("error", "Error connecting to LAT-Team");
+
+                model.addAttribute("searchTerm", term);        
+
+                return "unit3d";
+
+            }        try {
+
+        });
+
+    }            var results = unit3dApiClient.searchTorrents(term);/**import org.springframework.stereotype.Controller;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
+
+}
+            model.addAttribute("movies", results);
+
+            model.addAttribute("searchTerm", term); * Search Controller for LAT-Team private tracker using UNIT3D API
+
+            model.addAttribute("searchProvider", "LAT-Team");
+
+            return "unit3d"; */import org.springframework.ui.Model;
+
+        } catch (Exception e) {
+
+            log.error("Error searching LAT-Team: {}", e.getMessage());@Slf4j
+
+            model.addAttribute("error", "Error connecting to LAT-Team");
+
+            model.addAttribute("searchTerm", term);@Controllerimport org.springframework.web.bind.annotation.GetMapping;import lombok.RequiredArgsConstructor;import lombok.RequiredArgsConstructor;
+
+            return "unit3d";
+
+        }@RequestMapping("/search")
+
+    }
+
+@RequiredArgsConstructorimport org.springframework.web.bind.annotation.RequestMapping;
+
+    @GetMapping("/latteam/async")
+
+    @ResponseBodypublic class UnifiedSearchController {
+
+    public CompletableFuture<String> latteamSearchAsync(@RequestParam(value = "term") String term, Model model) {
+
+        return CompletableFuture.supplyAsync(() -> {import org.springframework.web.bind.annotation.RequestParam;import lombok.extern.slf4j.Slf4j;import lombok.extern.slf4j.Slf4j;
+
+            log.info("Async searching LAT-Team for: {}", term);
+
+                private final Optional<UNIT3DAPIClient> unit3dAPIClient;
+
+            try {
+
+                var results = unit3dApiClient.searchTorrents(term);    private final UserPreferences userPreferences;
+
+                model.addAttribute("movies", results);
+
+                model.addAttribute("searchTerm", term);
+
+                model.addAttribute("searchProvider", "LAT-Team");
+
+                return "unit3d";    @Value("${unit3d.api.enabled:false}")import java.util.Optional;import org.springframework.beans.factory.annotation.Value;import org.springframework.beans.factory.annotation.Value;
+
+            } catch (Exception e) {
+
+                log.error("Error async searching LAT-Team: {}", e.getMessage());    private boolean unit3dEnabled;
+
+                model.addAttribute("error", "Error connecting to LAT-Team");
+
+                model.addAttribute("searchTerm", term);
+
+                return "unit3d";
+
+            }    @GetMapping("/torrents")
+
+        });
+
+    }    public String searchTorrents(@RequestParam("term") String term, Model model) {/**import org.springframework.stereotype.Controller;import org.springframework.stereotype.Controller;
+
+}
         Optional<Preference> darkModePreference = userPreferences.findById(1);
 
         boolean darkModeEnabled = darkModePreference.map(Preference::isEnabled).orElse(false); * Search Controller for LAT-Team private tracker using UNIT3D API

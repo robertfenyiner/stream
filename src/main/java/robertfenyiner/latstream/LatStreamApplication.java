@@ -1,4 +1,4 @@
-package com.robertfenyiner.latstream;
+package robertfenyiner.latstream;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,12 +13,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class LatStreamApplication {
 
 	public static void main(String[] args) {
-
 		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
 			System.setProperty("java.net.preferIPv4Stack", "true");
 		}
 
 		SpringApplication.run(LatStreamApplication.class, args);
 	}
-
 }
