@@ -77,7 +77,8 @@ public interface UNIT3DAPIClient {
     // Data Transfer Objects (DTOs) - Adaptados para LAT-Team
     
     record UNIT3DTorrentsResponse(
-        List<UNIT3DTorrent> data
+        List<UNIT3DTorrent> data,
+        UNIT3DPagination meta
     ) {}
 
     record UNIT3DTorrentDetailsResponse(
