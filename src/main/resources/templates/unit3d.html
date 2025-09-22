@@ -13,26 +13,28 @@
     </style>
 </head>
 <body>
-    <h1>Resultados de LAT-Team (UNIT3D)</h1>
-    <div th:if="${torrents != null}">
-        <ul class="torrent-list">
-            <li th:each="torrent : ${torrents}" class="torrent-item">
-                <div class="torrent-title" th:text="${torrent.attributes.name}">Nombre</div>
-                <div class="torrent-meta">
-                    <span th:text="${torrent.attributes.category}">Categoría</span> |
-                    <span th:text="${torrent.attributes.resolution}">Resolución</span> |
-                    <span th:text="${torrent.attributes.release_year}">Año</span> |
-                    <span th:text="${torrent.attributes.seeders}">Seeders</span> |
-                    <span th:text="${torrent.attributes.leechers}">Leechers</span>
-                </div>
-                <div th:if="${torrent.attributes.meta != null}">
-                    <img th:src="${torrent.attributes.meta.poster}" alt="Poster" style="max-height:120px; margin-top:10px; border-radius:4px;"/>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div th:if="${torrents == null || #lists.isEmpty(torrents)}">
-        <p>No hay resultados para mostrar.</p>
+    <div th:fragment="browseTorrents">
+        <h1>Resultados de LAT-Team (UNIT3D)</h1>
+        <div th:if="${torrents != null}">
+            <ul class="torrent-list">
+                <li th:each="torrent : ${torrents}" class="torrent-item">
+                    <div class="torrent-title" th:text="${torrent.attributes.name}">Nombre</div>
+                    <div class="torrent-meta">
+                        <span th:text="${torrent.attributes.category}">Categoría</span> |
+                        <span th:text="${torrent.attributes.resolution}">Resolución</span> |
+                        <span th:text="${torrent.attributes.release_year}">Año</span> |
+                        <span th:text="${torrent.attributes.seeders}">Seeders</span> |
+                        <span th:text="${torrent.attributes.leechers}">Leechers</span>
+                    </div>
+                    <div th:if="${torrent.attributes.meta != null}">
+                        <img th:src="${torrent.attributes.meta.poster}" alt="Poster" style="max-height:120px; margin-top:10px; border-radius:4px;"/>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${torrents == null || #lists.isEmpty(torrents)}">
+            <p>No hay resultados para mostrar.</p>
+        </div>
     </div>
 </body>
 </html>
