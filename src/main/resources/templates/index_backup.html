@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en"
+      th:attrappend="data-bs-theme=${darkmodeenabled ? 'dark' : 'light'}">
+<head>
+  <meta charset="UTF-8">
+  <title>LatStream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="LatStream - Your personal streaming platform for LAT-Team">
+
+  <!-- Bootstrap CSS -->
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+  <!-- HTMX -->
+  <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
+  <!-- Bootstrap ICONS -->
+  <link th:rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}">
+  <!-- PWA Support -->
+  <link rel="apple-touch-icon" th:href="@{/assets/images/logo.png}" />
+<!--  <link rel="manifest" th:href="@{/manifest.json}" />-->
+<!--  <meta name="theme-color" content="#0d6efd">-->
+  <style>
+    :root {
+      --animation-timing: 0.3s;
+      --card-border-radius: 0.75rem;
+      --header-height: 72px;
+      --bs-border-color-rgb: 222, 226, 230; /* Fix for missing CSS variable */
+    }
+
+    /* Page transition animations */
+    .content-transition {
+      transition: opacity var(--animation-timing), transform var(--animation-timing);
+    }
+
+    .htmx-swapping .content-transition {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    /* Global HTMX Progress Bar */
+    .htmx-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s 0.3s, opacity 0.3s linear;
+    }
+
+    .htmx-indicator.showing {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s linear;
+    }
+
+    .htmx-progress-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--bs-primary) 0%, var(--bs-info) 50%, var(--bs-primary) 100%);
+      background-size: 200% 100%;
+      animation: htmx-progress-animation 1.5s infinite;
+      transform-origin: 0% 50%;
+    }
+
+    @keyframes htmx-progress-animation {
+      0% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    /*@keyframes progress-animation {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }*/
+
+    /* Header and navigation */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background-color: rgba(var(--bs-body-bg-rgb), 0.85);
+      transition: padding var(--animation-timing);
+      border-bottom: 1px solid rgba(var(--bs-border-color-rgb), 0.1);
+    }
+
+    .app-header.scrolled {
+      padding: 0.5rem 0;
+      box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+    }
+
+    .nav-pills .nav-link {
+      color: var(--bs-body-color);
+      border-radius: var(--card-border-radius);
+      transition: all var(--animation-timing);
+      padding: 0.75rem 1.25rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    .nav-pills .nav-link:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--bs-primary);
+      box-shadow: 0 4px 10px rgba(var(--bs-primary-rgb), 0.35);
+    }
+
+    /* Search field styling */
+    .search-container {
+      position: relative;
+    }
+
+    .search-field {
+      border-radius: 50px;
+      padding-left: 45px;
+      padding-right: 15px;
+      height: 48px;
+      transition: all var(--animation-timing);
+      border-width: 2px;
+    }
+
+    .search-field:focus {
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--bs-body-color);
+      opacity: 0.5;
+    }
+
+    /* Card styling */
+    .card, .card-body {
+      border: none transparent !important;
+    }
+
+    .card-img-top {
+      aspect-ratio: 2/3;
+      object-fit: cover;
+    }
+
+    /* Section headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(var(--bs-border-color-rgb), 0.2);
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .section-header .view-all {
+      margin-left: auto;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      color: var(--bs-primary);
+      text-decoration: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      transition: background-color var(--animation-timing);
+      cursor: pointer;
+    }
+
+    .section-header .view-all:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    /* Badge styling */
+    .badge {
+      font-weight: 500;
+      padding: 0.5em 0.75em;
+      border-radius: 20px;
+    }
+
+    /* Featured content */
+    .featured-wrapper {
+      position: relative;
+      border-radius: var(--card-border-radius);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Theme toggle button */
+    .theme-toggle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--animation-timing);
+      background-color: rgba(var(--bs-body-bg-rgb), 0.5);
+      border: 2px solid var(--bs-border-color);
+    }
+
+    .theme-toggle-btn:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+      border-color: var(--bs-primary);
+    }
+
+    /* Horizontal scroll containers */
+    .scroll-container {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      margin: 0 -0.5rem;
+      padding: 0.5rem;
+      scroll-behavior: smooth;
+    }
+
+    .scroll-item {
+      scroll-snap-align: start;
+      flex: 0 0 auto;
+      width: calc(50% - 0.5rem);
+    }
+
+    @media (min-width: 576px) {
+      .scroll-item {
+        width: calc(33.333% - 0.667rem);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .scroll-item {
+        width: calc(25% - 0.75rem);
+      }
+    }
+
+    @media (min-width: 992px) {
+      .scroll-item {
+        width: calc(20% - 0.8rem);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .scroll-item {
+        width: calc(16.666% - 0.833rem);
+      }
+    }
+
+    .scroll-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .scroll-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--bs-border-color);
+      cursor: pointer;
+      transition: all var(--animation-timing);
+    }
+
+    .scroll-btn:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+      border-color: var(--bs-primary);
+    }
+
+    /* App footer */
+    .app-footer {
+      margin-top: 3rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--bs-border-color);
+    }
+
+    [data-bs-theme="dark"] .app-header {
+      background-color: rgba(10, 10, 10, 0.85); /* Near pitch black with transparency */
+    }
+
+    /* Enhanced progress bar for better light mode visibility */
+    [data-bs-theme="light"] .htmx-progress-bar {
+      height: 4px;
+      box-shadow: 0 0 5px rgba(var(--bs-primary-rgb), 0.7);
+      background: linear-gradient(90deg,
+        var(--bs-primary) 0%,
+        #0dcaf0 50%,
+        var(--bs-primary) 100%);
+      opacity: 0.9;
+    }
+    [data-bs-theme="dark"] .card {
+      background-color: rgb(10, 10, 10); /* Near pitch black for cards */
+    }
+
+    /* Movie card hover effects */
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .movie-overlay {
+        opacity: 0;
+        background: rgba(0,0,0,0.5);
+        transition: opacity 0.3s ease;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .card:hover .movie-overlay {
+        opacity: 1;
+    }
+
+    /* Smooth transitions for HTMX */
+    .htmx-swapping {
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .htmx-settling {
+        opacity: 1;
+        transition: opacity 0.3s ease-in;
+    }
+  </style>
+</head>
+
+<body th:styleappend="${darkmodeenabled}? 'background-color: rgb(0, 0, 0);' : ''">
+  <!-- Global HTMX Progress indicator -->
+  <div class="htmx-indicator">
+    <div class="htmx-progress-bar"></div>
+  </div>
+
+  <!-- Main container -->
+  <div class="container-fluid px-0">
+    <!-- Header -->
+    <header class="app-header py-3">
+      <div class="container">
+        <div class="row align-items-center">
+          <!--<div class="col-auto d-none d-lg-block">
+            <div class="d-flex align-items-center">
+              <span class="fs-4 fw-bold me-2">🎞️</span>
+              <h1 class="h5 mb-0 fw-bold">LatStream</h1>
+            </div>
+          </div>-->
+
+          <div class="col">
+            <div class="search-container">
+              <i class="bi bi-search search-icon"></i>
+              <input type="search"
+                   class="form-control search-field"
+                   placeholder="Search movies, shows and more..."
+                   aria-label="Active Search"
+                   id="active-search"
+                   name="term"
+                   hx-trigger="input changed delay:500ms, search"
+                   hx-get="/search/yts"
+                   hx-target="#search-results"
+                   hx-indicator=".htmx-indicator"
+                   hx-push-url="true"
+                   hx-swap="innerHTML transition:true"
+                   hx-boost="true"
+                   autofocus>
+            </div>
+          </div>
+
+          <div class="col-auto">
+            <button class="theme-toggle-btn" id="btnSwitch" type="button">
+              <i class="bi bi-moon-stars-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container py-4">
+      <!-- Main navigation -->
+      <ul class="nav nav-pills mb-4" id="mainNav" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active d-flex align-items-center" id="home-tab" data-bs-toggle="pill" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+            <i class="bi bi-search me-md-2"></i>
+            <span class="d-none d-md-inline">Search</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link d-flex align-items-center" id="movies-tab" data-bs-toggle="pill" data-bs-target="#movies" type="button" role="tab" aria-controls="movies" aria-selected="false">
+            <i class="bi bi-film me-md-2"></i>
+            <span class="d-none d-md-inline">Movies</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link d-flex align-items-center" id="personalmedia-tab" data-bs-toggle="pill" data-bs-target="#personalmedia" type="button" role="tab" aria-controls="personalmedia" aria-selected="false">
+            <i class="bi bi-phone me-md-2"></i>
+            <span class="d-none d-md-inline">Personal</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link d-flex align-items-center" id="downloads-tab" data-bs-toggle="pill" data-bs-target="#downloads" type="button" role="tab" aria-controls="downloads" aria-selected="false">
+            <i class="bi bi-cloud-arrow-down me-md-2"></i>
+            <span class="d-none d-md-inline">Downloads</span>
+            <span hx-get="/download/count" hx-trigger="load" class="badge bg-primary ms-2"></span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab content -->
+      <div class="tab-content" id="mainTabContent">
+        <!-- Search Tab -->
+        <div class="tab-pane fade show active content-transition" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <!-- Search results -->
+          <div id="search-results" class="mt-3" hx-swap-oob="true">
+            <div th:if="${results} != null and ${results.torrents} != null" th:fragment="search-results" class="search-results">
+              <h5 class="mb-3">Resultados de LAT-Team</h5>
+              <div class="row g-3">
+                <div class="col-md-6 col-lg-4" th:each="torrent : ${results.torrents}">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                      <h6 class="card-title" th:text="${torrent.name}">Título</h6>
+                      <p class="card-text">
+                        <small class="text-muted">
+                          <i class="bi bi-tag"></i> <span th:text="${torrent.category}">Categoría</span><br/>
+                          <i class="bi bi-hdd"></i> <span th:text="${torrent.size}">Tamaño</span>
+                        </small>
+                      </p>
+                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a th:href="@{/media/download/{id}(id=${torrent.id})}" 
+                           class="btn btn-success btn-sm">
+                          <i class="bi bi-download"></i> Descargar
+                        </a>
+                        <a th:href="@{/media/stream/{id}(id=${torrent.id})}" 
+                           class="btn btn-primary btn-sm">
+                          <i class="bi bi-play-circle"></i> Stream
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- YTS Results (existing) -->
+            <div th:if="${results} != null and ${results.movies} != null" th:fragment="yts-results" class="search-results">
+              <h5 class="mb-3">Resultados de YTS</h5>
+              <div class="card border-0" th:each="result: ${results.movies}">
+                <div class="card-body">
+                  <a class="card-title card-link primary"
+                     style="cursor: pointer"
+                     hx:get="@{/yts/movies/{id}(id=${result.id()})}"
+                     hx-boost="true"
+                     hx-target="#search-results"
+                     hx-swap="innerHTML transition:true"
+                     hx-push-url="true"
+                     hx-indicator=".htmx-indicator"
+                     th:text="${result.title_long}"></a>
+                  <p class="card-text" th:text="${#strings.arrayJoin(result.genres, ' ')}"><small class="text-muted"></small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Movies Tab -->
+        <div class="tab-pane fade content-transition" id="movies" role="tabpanel" aria-labelledby="movies-tab">
+          <!-- Featured content -->
+          <!-- Disabled for now, can be enabled later as Microsoft discontinued Movies API
+          <div class="featured-wrapper"
+               hx-get="/microsoft/newreleases"
+               hx-trigger="click from:#movies-tab"
+               hx-indicator=".htmx-indicator">
+          </div>-->
+
+          <!-- WatchedList Section -->
+          <div hx-get="/watchlist" hx-trigger="load">
+
+          </div>
+
+          <!-- Most Watched Section -->
+          <div class="section-header">
+            <h2>Most Watched</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="most-watched-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="most-watched-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='mostwatched')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-indicator=".htmx-indicator"
+                 hx-push-url="true">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="most-watched-container">
+            <div id="most-watched-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsMostWatched"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+
+          <!-- Latest Movies -->
+          <div class="section-header">
+            <h2>Latest Movies</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="latest-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="latest-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='latest')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-push-url="true"
+                 hx-indicator=".htmx-indicator">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="latest-container">
+            <div id="latest-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsLatest"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+
+          <!-- Most Liked Movies -->
+          <div class="section-header">
+            <h2>Most Liked</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="most-liked-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="most-liked-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='mostliked')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-push-url="true"
+                 hx-indicator=".htmx-indicator">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="most-liked-container">
+            <div id="most-liked-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsMostLiked"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+
+          <!-- IMDB Highest Rated -->
+          <div class="section-header">
+            <h2>IMDB Highest Rated</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="imdb-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="imdb-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='imdbrating')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-push-url="true"
+                 hx-indicator=".htmx-indicator">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="imdb-container">
+            <div id="imdb-highest-rated-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsImdbRating"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+
+          <!-- Latest Comedies -->
+          <div class="section-header">
+            <h2>Latest Comedies</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="comedy-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="comedy-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='latestcomedies')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-push-url="true"
+                 hx-indicator=".htmx-indicator">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="comedy-container">
+            <div id="latest-comedy-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsLatestComedies"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+
+          <!-- Must Watch -->
+          <div class="section-header">
+            <h2>Must Watch</h2>
+            <div class="ms-auto scroll-controls">
+              <button class="scroll-btn scroll-left" data-target="must-watch-container">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="scroll-btn scroll-right" data-target="must-watch-container">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <a class="view-all ms-2"
+                 hx:get="@{/yts/movies/cat/{category}(category='mustwatch')}"
+                 hx-boost="true"
+                 hx-target="#movies"
+                 hx-swap="innerHTML transition:true"
+                 hx-push-url="true"
+                 hx-indicator=".htmx-indicator">
+                View All <i class="bi bi-chevron-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="scroll-container" id="must-watch-container">
+            <div id="must-watch-movies"
+                 class="d-flex gap-3"
+                 hx-get="/yts/ytsMustWatch"
+                 hx-trigger="click from:#movies-tab"
+                 hx-indicator=".htmx-indicator">
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Media Tab -->
+        <div class="tab-pane fade content-transition" id="personalmedia" role="tabpanel" aria-labelledby="personalmedia-tab">
+          <div class="d-flex align-items-center mb-4">
+            <h2 class="h3 mb-0">Personal Media  <!--<i class="bi bi-arrow-repeat"
+                                                   data-toggle="tooltip"
+                                                   title="Refresh"
+                                                   style="cursor: pointer"
+                                                   hx-get="/refresh/personalmedia"
+                                                   hx-indicator=".htmx-indicator"
+                                                   hx-target="#personalMediaPlayer"
+                                                   hx-swap="outerHTML"></i>-->
+            </h2>
+            <div class="ms-auto">
+              <button class="btn btn-primary btn-sm rounded-pill"
+                      data-toggle="tooltip"
+                      title="Refresh"
+                      style="cursor: pointer"
+                      hx-get="/refresh/personalmedia"
+                      hx-indicator=".htmx-indicator"
+                      hx-target="#personalMediaPlayer"
+                      hx-swap="outerHTML"
+              >
+                <i class="bi bi-arrow-repeat me-2"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div id="personal-media"
+               class="fade-me-in"
+               hx-get="/personal/media"
+               hx-trigger="click from:#personalmedia-tab"
+               hx-indicator=".htmx-indicator"
+               hx-swap="innerHTML transition:true">
+            <div class="d-flex justify-content-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Downloads Tab -->
+        <div class="tab-pane fade content-transition" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+          <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-3">Add New Download</h5>
+              <div id="getDownloadForm"
+                   hx-get="/download/form"
+                   hx-trigger="click from:#downloads-tab"
+                   hx-indicator=".htmx-indicator"
+                   hx-swap="innerHTML transition:true">
+                <div class="d-flex justify-content-center py-3">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center mb-3">
+            <h2 class="h4 mb-0">Download Queue</h2>
+            <span class="badge bg-primary rounded-pill ms-2" hx-get="/download/count" hx-trigger="load">0</span>
+            <div class="ms-auto">
+              <button class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash me-2"></i>Clear All
+              </button>
+            </div>
+          </div>
+
+          <div id="getAllDownloads"
+               class="fade-me-in"
+               hx-get="/download"
+               hx-trigger="click from:#downloads-tab"
+               hx-indicator=".htmx-indicator"
+               hx-swap="innerHTML transition:true">
+            <div class="d-flex justify-content-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer text-center text-md-start">
+        <div class="row align-items-center g-3">
+          <div class="col-md-6">
+            <p class="mb-0 text-body-secondary">
+              © 2025 Akshath Sai, Pittala
+              <a href="https://github.com/AkshathSai" class="ms-2 text-decoration-none">
+                <i class="bi bi-github"></i>
+              </a>
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="d-flex justify-content-center justify-content-md-end gap-3">
+              <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill">About</a>
+              <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill">Privacy</a>
+              <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill">Settings</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/webjars/htmx-ext-ws/ws.js}"></script>
+  <script>
+    // Dark mode toggle
+    document.getElementById('btnSwitch').addEventListener('click', function () {
+      const currentTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-bs-theme', newTheme);
+      document.body.style.backgroundColor = newTheme === 'dark' ? 'rgb(0,0,0)' : '';
+
+      // Toggle icon
+      const icon = this.querySelector('i');
+      if (newTheme === 'dark') {
+        icon.classList.remove('bi-sun');
+        icon.classList.add('bi-moon-stars-fill');
+      } else {
+        icon.classList.remove('bi-moon-stars-fill');
+        icon.classList.add('bi-sun');
+      }
+
+      // Send AJAX request to save preference
+      fetch('/preference', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prefId: 1, enabled: newTheme === 'dark' })
+      });
+    });
+
+    // Handle search results tab change
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+      if (event.detail && event.detail.target && event.detail.target.id === 'search-results') {
+        document.getElementById('home-tab').click();
+      }
+    });
+
+    // Make search bar smaller on scroll
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('.app-header');
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Initialize scroll buttons
+    document.querySelectorAll('.scroll-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const container = document.getElementById(targetId);
+        const direction = this.classList.contains('scroll-left') ? -1 : 1;
+        const scrollAmount = container.offsetWidth * 0.75 * direction;
+
+        container.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Set theme icon based on current theme
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+      const icon = document.querySelector('#btnSwitch i');
+
+      if (currentTheme === 'dark') {
+        icon.classList.remove('bi-sun');
+        icon.classList.add('bi-moon-stars-fill');
+      } else {
+        icon.classList.remove('bi-moon-stars-fill');
+        icon.classList.add('bi-sun');
+      }
+    });
+
+    // Global progress indicator for HTMX
+    document.body.addEventListener('htmx:beforeRequest', function() {
+      document.querySelector('.htmx-indicator').classList.add('showing');
+    });
+
+    document.body.addEventListener('htmx:afterRequest', function() {
+      setTimeout(function() {
+        document.querySelector('.htmx-indicator').classList.remove('showing');
+      }, 300);
+    });
+
+    document.body.addEventListener('htmx:responseError', function() {
+      const indicator = document.querySelector('.htmx-indicator');
+      indicator.style.backgroundColor = 'var(--bs-danger)';
+      setTimeout(function() {
+        indicator.classList.remove('showing');
+        indicator.style.backgroundColor = '';
+      }, 500);
+    });
+  </script>
+</body>
+</html>
