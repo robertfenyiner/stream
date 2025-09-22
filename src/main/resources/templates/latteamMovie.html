@@ -1,0 +1,147 @@
+<div th:fragment="latteamMovieOverview" th:remove="tag" xmlns:hx="http://www.w3.org/1999/xhtml">
+  <div id="latteamMovieOverview" class="content-transition">
+    <!-- Back button -->
+    <div class="d-flex align-items-center mb-4">
+      <button onclick="window.history.back();" class="btn btn-outline-primary rounded-circle me-3" aria-label="Go back">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <h2 class="h3 mb-0" th:text="${latteamMovieRecord.data().movie().title_long()}"></h2>
+    </div>
+
+    <!-- Movie details section -->
+    <div class="row g-4 mb-5">
+      <!-- Poster column -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm movie-card border-0">
+          <div class="card-img overflow-hidden">
+            <img th:src="@{${latteamMovieRecord.data().movie().large_cover_image()}}"
+                 class="img-fluid rounded-0"
+                 th:alt="${latteamMovieRecord.data().movie().title_long()}"
+                 loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- Details column -->
+      <div class="col-md-8">
+        <div class="card border-0 h-100">
+          <div class="card-body p-0">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="badge bg-primary" th:each="genre : ${latteamMovieRecord.data().movie().genres()}" th:text="${genre}"></span>
+            </div>
+
+            <div class="d-flex gap-3 mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-star-fill text-warning me-1"></i>
+                <span class="fw-bold" th:text="${latteamMovieRecord.data().movie().rating}"></span>
+              </div>
+              <div class="d-flex align-items-center" th:if="${latteamMovieRecord.data().movie().runtime() != null}">
+                <i class="bi bi-clock me-1"></i>
+                <span th:text="${latteamMovieRecord.data().movie().runtime()} + ' min'"></span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="bi bi-translate me-1"></i>
+                <span th:text="${latteamMovieRecord.data().movie().language()}"></span>
+              </div>
+            </div>
+
+            <p class="text-secondary mb-4" th:text="${latteamMovieRecord.data().movie().description_intro()}"></p>
+
+            <!-- Watchlist form -->
+            <form hx-post="/watchlist" hx-trigger="click from:#addToWatchlist" class="mb-4">
+              <input type="hidden" id="movie-title" name="movie-title" th:value="${latteamMovieRecord.data().movie().title_long()}" />
+              <input type="hidden" id="item-url" name="item-url" th:value="@{/latteam/movies/{id}(id=${latteamMovieRecord.data().movie().id()})}" />
+              <input type="hidden" id="thumbnail-url" name="thumbnail-url" th:value="${latteamMovieRecord.data().movie().large_cover_image()}" />
+
+              <button id="addToWatchlist" type="button" class="btn btn-outline-primary rounded-pill">
+                <i class="bi bi-heart me-2"></i> Add to Watchlist
+              </button>
+            </form>
+
+            <!-- Download options -->
+            <form class="mb-3" hx-post="/download/torrent" hx-swap="outerHTML">
+              <input type="hidden" id="torrentName" name="torrentName" th:value="${latteamMovieRecord.data().movie().title_long()}" />
+
+              <div class="card border shadow-sm mb-3">
+                <div class="card-header bg-transparent">
+                  <h5 class="mb-0">
+                    <i class="bi bi-cloud-arrow-down me-2"></i> Download Options
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <select class="form-select" id="selectedOption" name="selectedOption">
+                      <option th:each="url: ${latteamMovieRecord.data().movie().torrents()}"
+                              th:value="${url.hash()}"
+                              th:text="${url.quality() + '.' + url.video_codec() + ' [' + url.size() + '] - ' + url.audio_channels() + ' - ' + url.bit_depth() + 'bit'}"></option>
+                    </select>
+                    <div class="form-text">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Solo hashes informativos de LAT-Team.
+                    </div>
+                  </div>
+
+                  <div class="mb-3 form-check">
+                    <input class="form-check-input" type="checkbox" id="sequentialCheck" name="sequentialCheck">
+                    <label class="form-check-label" for="sequentialCheck">
+                      Sequential download
+                    </label>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary rounded-pill">
+                    <i class="bi bi-download me-2"></i> Download
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube Trailer -->
+    <div class="section-header mt-5">
+      <h2>Trailers & More</h2>
+    </div>
+    <div class="row">
+      <div class="col"
+           hx:get="@{/yt/crawl/trailer/{movie}(movie=${latteamMovieRecord.data().movie().title_long()})}"
+           hx-swap="innerHTML transition:true"
+           hx-trigger="load delay:100ms"
+           hx-indicator=".htmx-indicator"
+      ></div>
+    </div>
+
+    <!-- Suggested movies section -->
+    <div class="section-header mt-5">
+      <h2>You May Also Like</h2>
+      <div class="ms-auto scroll-controls">
+        <button class="scroll-btn scroll-left" data-target="suggested-container">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="scroll-btn scroll-right" data-target="suggested-container">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="scroll-container" id="suggested-container">
+      <div class="scroll-item" th:each="movie: ${latteamSuggestedRecord.data.movies}">
+        <div class="card h-100 shadow-sm movie-card">
+          <a hx:get="@{/latteam/movies/{id}(id=${movie.id()})}"
+             hx-boost="true"
+             hx-target="#latteamMovieOverview"
+             hx-swap="innerHTML transition:true"
+             hx-indicator=".htmx-indicator"
+             hx-push-url="true">
+            <img loading="lazy"
+                 class="card-img-top"
+                 th:src="@{${movie.medium_cover_image}}"
+                 th:alt="${movie.title_long}"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

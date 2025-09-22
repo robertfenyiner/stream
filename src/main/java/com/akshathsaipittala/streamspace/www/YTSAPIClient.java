@@ -47,7 +47,9 @@ public interface YTSAPIClient {
     @GetExchange("list_movies.json?sort_by=like_count&order_by=desc&limit=50&page={page}")
     YTSMoviesRecord getMostLiked(@PathVariable int page);
 
-// Archivo eliminado: Solo tracker privado
+    /**
+     * TODO: Enhance API to fetch some more info
+     * https://yts.mx/api/v2/movie_details.json?movie_id=36846&with_images=true&with_cast=true
      */
     @GetExchange("movie_details.json?movie_id={id}")
     YTSMovieRecord getMovieDetails(@PathVariable int id);
@@ -155,7 +157,9 @@ public interface YTSAPIClient {
     @GetExchange("list_movies.json?sort_by=like_count&order_by=desc&limit=50&page={page}")
     YTSMoviesRecord getMostLiked(@PathVariable int page);
 
-// Archivo eliminado: Solo tracker privado
+    /**
+     * TODO: Enhance API to fetch some more info
+     * https://yts.mx/api/v2/movie_details.json?movie_id=36846&with_images=true&with_cast=true
      */
     @GetExchange("movie_details.json?movie_id={id}")
     YTSMovieRecord getMovieDetails(@PathVariable int id);
