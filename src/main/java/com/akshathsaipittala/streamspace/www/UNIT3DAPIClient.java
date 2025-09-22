@@ -28,9 +28,9 @@ public interface UNIT3DAPIClient {
     UNIT3DTorrentsResponse getTorrents(@PathVariable int page, @PathVariable int perPage);
 
     /**
-     * Search/filter torrents by various criteria
+     * Search/filter torrents by various criteria (usando parámetro 'name' según UNIT3D original)
      */
-    @GetExchange("torrents/filter?search={search}&page={page}&perPage={perPage}")
+    @GetExchange("torrents/filter?name={search}&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse searchTorrents(
         @PathVariable String search, 
         @PathVariable int page, 
@@ -38,9 +38,9 @@ public interface UNIT3DAPIClient {
     );
 
     /**
-     * Advanced filter with multiple parameters
+     * Advanced filter with multiple parameters (usando parámetros correctos según UNIT3D)
      */
-    @GetExchange("torrents/filter?search={search}&category_id={categoryId}&type_id={typeId}&resolution_id={resolutionId}&page={page}&perPage={perPage}")
+    @GetExchange("torrents/filter?name={search}&categoryIds[]={categoryId}&typeIds[]={typeId}&resolutionIds[]={resolutionId}&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse filterTorrents(
         @PathVariable String search,
         @PathVariable Integer categoryId,
@@ -57,22 +57,28 @@ public interface UNIT3DAPIClient {
     UNIT3DTorrentDetailsResponse getTorrentDetails(@PathVariable int id);
 
     /**
-     * Get latest torrents
+     * Get latest torrents (usando sortField y sortDirection según UNIT3D)
      */
-    @GetExchange("torrents?sort=created_at&direction=desc&page={page}&perPage={perPage}")
+    @GetExchange("torrents/filter?sortField=created_at&sortDirection=desc&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse getLatestTorrents(@PathVariable int page, @PathVariable int perPage);
 
     /**
      * Get most seeded torrents
      */
-    @GetExchange("torrents?sort=seeders&direction=desc&page={page}&perPage={perPage}")
+    @GetExchange("torrents/filter?sortField=seeders&sortDirection=desc&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse getMostSeededTorrents(@PathVariable int page, @PathVariable int perPage);
 
     /**
-     * Get freeleech torrents
+     * Get freeleech torrents (usando parámetros correctos)
      */
-    @GetExchange("torrents/filter?free=1&page={page}&perPage={perPage}")
+    @GetExchange("torrents/filter?free=100&page={page}&perPage={perPage}")
     UNIT3DTorrentsResponse getFreeleechTorrents(@PathVariable int page, @PathVariable int perPage);
+
+    /**
+     * Get torrents by category (películas)
+     */
+    @GetExchange("torrents/filter?categoryIds[]={categoryId}&page={page}&perPage={perPage}")
+    UNIT3DTorrentsResponse getTorrentsByCategory(@PathVariable int categoryId, @PathVariable int page, @PathVariable int perPage);
 
     // Data Transfer Objects (DTOs) - Adaptados para LAT-Team
     
@@ -107,18 +113,35 @@ public interface UNIT3DAPIClient {
     ) {}
 
     record UNIT3DTorrentAttributes(
-        UNIT3DTorrentMeta meta,
         String name,
-        String release_year,
+        long size,
+        String info_hash,
+        int seeders,
+        int leechers,
+        int times_completed,
+        String created_at,
+        String bumped_at,
         String category,
         String type,
         String resolution,
-        String media_info
+        String release_year,
+        String description,
+        String mediainfo,
+        boolean free,
+        boolean sticky,
+        boolean featured,
+        UNIT3DTorrentMeta meta
     ) {}
 
     record UNIT3DTorrentMeta(
         String poster,
-        String genres
+        String backdrop,
+        String genres,
+        String overview,
+        String imdb_id,
+        String tmdb_id,
+        Double vote_average,
+        String runtime
     ) {}
 
     record UNIT3DTorrentDetails(
