@@ -1,12 +1,12 @@
-# 🎬 StreamSpace - Your Gateway to Entertainment 🎬🎉
+# 🎬 LatStream - Your Gateway to LAT-Team Entertainment 🎬🎉
 
-[![Java CI with Maven](https://github.com/AkshathSai/StreamSpace/actions/workflows/ci-build.yml/badge.svg?branch=main)](https://github.com/AkshathSai/StreamSpace/actions/workflows/ci-build.yml)
+[![Java CI with Maven](https://github.com/robertfenyiner/latstream/actions/workflows/ci-build.yml/badge.svg?branch=main)](https://github.com/robertfenyiner/latstream/actions/workflows/ci-build.yml)
 ![Maven](https://badgen.net/badge/icon/maven?icon=maven&label)
-![GitHub](https://img.shields.io/github/license/akshathsai/TuneTrip)
+![GitHub](https://img.shields.io/github/license/robertfenyiner/latstream)
 > [!CAUTION]
-> The StreamSpace project is designed and developed solely for educational purposes. It demonstrates the capabilities of modern software technologies in aggregating and streaming media content. The use of this software for downloading copyrighted material without permission is strictly prohibited and against the law. Users are responsible for complying with all applicable laws and regulations in their jurisdiction regarding copyright infringement. We strongly advise against using StreamSpace for any activities that may infringe upon the rights of content creators and distributors. Use this software responsibly and at your own risk.
+> The LatStream project is designed and developed for private tracker integration with LAT-Team. It demonstrates the capabilities of modern software technologies in aggregating and streaming media content. The use of this software for downloading copyrighted material without permission is strictly prohibited and against the law. Users are responsible for complying with all applicable laws and regulations in their jurisdiction regarding copyright infringement. We strongly advise against using LatStream for any activities that may infringe upon the rights of content creators and distributors. Use this software responsibly and at your own risk.
 
-Ready to explore the world of StreamSpace? [Dive right in!](#setup--installation)
+Ready to explore the world of LatStream? [Dive right in!](#setup--installation)
 
 <p align="center">
 <img src="https://upload.wikimedia.org/wikipedia/de/e/e1/Java-Logo.svg" alt="Java">
@@ -94,13 +94,13 @@ Ready to explore the world of StreamSpace? [Dive right in!](#setup--installation
 2. Clone the repository:
 
 ```
-git clone https://github.com/AkshathSai/StreamSpace.git
+git clone https://github.com/robertfenyiner/latstream.git
 ```
 
 3. Change into the project directory:
    
 ```
-cd StreamSpace
+cd latstream
 ```
 
 4. Build the project:
@@ -112,7 +112,7 @@ mvn clean install
 cd target
 ```
 ```
-java -jar StreamSpace-0.0.1-SNAPSHOT.jar
+java -jar latstream-1.0.0.jar
 ```
 6. Visit https://localhost:8080/
 7. Check out API Docs at https://localhost:8080/swagger-ui/index.html
