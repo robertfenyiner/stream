@@ -1,4 +1,4 @@
-package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
+package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
 
 
 
@@ -6,17 +6,35 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.GetMapping;import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.web.bind.annotation.RequestParam;import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;import org.springframework.ui.Model;
 
 
 
-@Controllerimport org.springframework.stereotype.Controller;import lombok.extern.slf4j.Slf4j;
+@Controllerimport org.springframework.web.bind.annotation.GetMapping;import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/search")
+
+public class UnifiedSearchController {import org.springframework.web.bind.annotation.RequestMapping;
+
+
+
+    @GetMapping("/latteam")import org.springframework.web.bind.annotation.RequestParam;import org.springframework.beans.factory.annotation.Autowired;
+
+    public String latteamSearch(@RequestParam(value = "term") String term, Model model) {
+
+        model.addAttribute("searchTerm", term);
+
+        model.addAttribute("searchProvider", "LAT-Team");
+
+        return "unit3d";@Controllerimport org.springframework.stereotype.Controller;import lombok.extern.slf4j.Slf4j;
+
+    }
+
+}@RequestMapping("/search")
 
 public class UnifiedSearchController {import org.springframework.ui.Model;
 
