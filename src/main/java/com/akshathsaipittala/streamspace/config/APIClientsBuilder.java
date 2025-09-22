@@ -5,6 +5,7 @@ import com.akshathsaipittala.streamspace.www.MicrosoftStoreAPI;
 import com.akshathsaipittala.streamspace.www.UNIT3DAPIClient;
 import com.akshathsaipittala.streamspace.www.YTSAPIClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class APIClientsBuilder {
     }
 
     @Bean
+    @Qualifier("default")
     HttpServiceProxyFactory httpServiceProxyFactory(RestClient restClient) {
         return HttpServiceProxyFactory
                 .builderFor(RestClientAdapter.create(restClient))
@@ -37,6 +39,7 @@ public class APIClientsBuilder {
     }
 
     @Bean
+    @Qualifier("unit3d")
     @ConditionalOnProperty(name = "unit3d.api.enabled", havingValue = "true")
     HttpServiceProxyFactory unit3dHttpServiceProxyFactory(RestClient unit3dRestClient) {
         return HttpServiceProxyFactory
@@ -45,23 +48,23 @@ public class APIClientsBuilder {
     }
 
     @Bean
-    YTSAPIClient ytsapiClient(HttpServiceProxyFactory factory) {
+    YTSAPIClient ytsapiClient(@Qualifier("default") HttpServiceProxyFactory factory) {
         return factory.createClient(YTSAPIClient.class);
     }
 
     @Bean
-    APIBayClient apiBayClient(HttpServiceProxyFactory factory) {
+    APIBayClient apiBayClient(@Qualifier("default") HttpServiceProxyFactory factory) {
         return factory.createClient(APIBayClient.class);
     }
 
     @Bean
-    MicrosoftStoreAPI microsoftStoreAPI(HttpServiceProxyFactory factory) {
+    MicrosoftStoreAPI microsoftStoreAPI(@Qualifier("default") HttpServiceProxyFactory factory) {
         return factory.createClient(MicrosoftStoreAPI.class);
     }
 
     @Bean
     @ConditionalOnProperty(name = "unit3d.api.enabled", havingValue = "true")
-    UNIT3DAPIClient unit3dAPIClient(HttpServiceProxyFactory unit3dHttpServiceProxyFactory) {
+    UNIT3DAPIClient unit3dAPIClient(@Qualifier("unit3d") HttpServiceProxyFactory unit3dHttpServiceProxyFactory) {
         return unit3dHttpServiceProxyFactory.createClient(UNIT3DAPIClient.class);
     }
 }
