@@ -6,17 +6,13 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+@SpringBootApplication
 @EnableAsync
 @EnableCaching
 @EnableScheduling
-@SpringBootApplication
 public class LatStreamApplication {
 
-	public static void main(String[] args) {
-		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-			System.setProperty("java.net.preferIPv4Stack", "true");
-		}
-
-		SpringApplication.run(LatStreamApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(LatStreamApplication.class, args);
+    }
 }

@@ -1,31 +1,58 @@
-package robertfenyiner.latstream.config;package com.robertfenyiner.latstream.config;
+package robertfenyiner.latstream.config;package robertfenyiner.latstream.config;package com.robertfenyiner.latstream.config;
 
 
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import org.springframework.stereotype.Component;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.stereotype.Component;import org.springframework.context.annotation.Configuration;
+@Component
 
-import org.springframework.http.HttpHeaders;
+@ConfigurationProperties(prefix = "unit3d.api")import org.springframework.stereotype.Component;import org.springframework.context.annotation.Configuration;
 
-@Componentimport org.springframework.web.client.RestClient;
+public class UNIT3DConfig {
 
-@ConfigurationProperties(prefix = "unit3d.api")
+    import org.springframework.http.HttpHeaders;
 
-public class UNIT3DConfig {/**
+    private String baseUrl;
 
-     * Configuration for UNIT3D Private Tracker API
-
-    private String key; */
-
-    private String baseUrl;@Configuration
-
-    private boolean enabled;public class UNIT3DConfig {
+    private String apiKey;@Componentimport org.springframework.web.client.RestClient;
 
     
 
-    public String getKey() {    @Value("${unit3d.api.base-url}")
+    public String getBaseUrl() {@ConfigurationProperties(prefix = "unit3d.api")
 
+        return baseUrl;
+
+    }public class UNIT3DConfig {/**
+
+    
+
+    public void setBaseUrl(String baseUrl) {     * Configuration for UNIT3D Private Tracker API
+
+        this.baseUrl = baseUrl;
+
+    }    private String key; */
+
+    
+
+    public String getApiKey() {    private String baseUrl;@Configuration
+
+        return apiKey;
+
+    }    private boolean enabled;public class UNIT3DConfig {
+
+    
+
+    public void setApiKey(String apiKey) {    
+
+        this.apiKey = apiKey;
+
+    }    public String getKey() {    @Value("${unit3d.api.base-url}")
+
+}
         return key;    private String baseUrl;
 
     }

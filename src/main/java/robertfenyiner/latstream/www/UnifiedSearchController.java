@@ -1,4 +1,4 @@
-package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
+package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;package com.robertfenyiner.latstream.www;
 
 
 
@@ -10,11 +10,59 @@ import org.springframework.web.bind.annotation.GetMapping;import org.springframe
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.web.bind.annotation.RequestParam;import org.springframework.ui.Model;
+import org.springframework.ui.Model;
 
+@Controller
 
+@RequestMapping("/search")import org.springframework.web.bind.annotation.GetMapping;import org.springframework.stereotype.Controller;
 
-@Controllerimport org.springframework.web.bind.annotation.GetMapping;import lombok.extern.slf4j.Slf4j;
+public class UnifiedSearchController {
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+    @GetMapping("/latteam")
+
+    public String searchLatTeam(Model model) {import org.springframework.ui.Model;
+
+        model.addAttribute("message", "LAT-Team search functionality");
+
+        return "unit3d";@Controller
+
+    }
+
+}@RequestMapping("/search")import org.springframework.web.bind.annotation.GetMapping;import org.springframework.stereotype.Controller;
+
+public class UnifiedSearchController {
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+    @GetMapping("/latteam")
+
+    public String searchLatTeam(Model model) {import org.springframework.ui.Model;
+
+        model.addAttribute("message", "LAT-Team search functionality");
+
+        return "unit3d";@Controller
+
+    }
+
+}@RequestMapping("/search")import org.springframework.web.bind.annotation.GetMapping;import org.springframework.stereotype.Controller;
+
+public class UnifiedSearchController {
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+    @GetMapping("/latteam")
+
+    public String searchLatTeam(Model model) {import org.springframework.web.bind.annotation.RequestParam;import org.springframework.ui.Model;
+
+        model.addAttribute("message", "LAT-Team search functionality");
+
+        return "unit3d";
+
+    }
+
+}@Controllerimport org.springframework.web.bind.annotation.GetMapping;import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/search")
 
