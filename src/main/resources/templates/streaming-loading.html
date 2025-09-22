@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preparando Stream - LatStream</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .loading-spinner {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-dark text-white">
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card bg-secondary border-0">
+                    <div class="card-body text-center p-5">
+                        
+                        <!-- Loading Icon -->
+                        <div class="mb-4">
+                            <i class="bi bi-cloud-download loading-spinner text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h2 class="mb-3">Preparando Streaming</h2>
+                        <p class="text-muted mb-4" th:text="${torrentName}">Cargando contenido...</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="progress mb-4" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        
+                        <!-- Status Text -->
+                        <div class="mb-4">
+                            <p class="mb-2">
+                                <i class="bi bi-download"></i> 
+                                <span id="status-text">Iniciando descarga de torrent...</span>
+                            </p>
+                            <small class="text-muted">
+                                <span id="download-speed">0 KB/s</span> • 
+                                <span id="peers">0 peers</span> • 
+                                <span id="eta">Calculando tiempo...</span>
+                            </small>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 justify-content-center">
+                            <button id="check-streaming" class="btn btn-primary" disabled>
+                                <i class="bi bi-play-circle"></i> Comprobar si está listo
+                            </button>
+                            <a th:href="${latTeamUrl}" class="btn btn-outline-secondary" target="_blank" th:if="${latTeamUrl}">
+                                <i class="bi bi-box-arrow-up-right"></i> Ver en LAT-Team
+                            </a>
+                            <a href="/" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </a>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="mt-4 pt-3 border-top border-secondary">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i>
+                                El streaming comenzará automáticamente cuando haya suficiente contenido descargado
+                            </small>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const torrentId = /*[[${torrentId}]]*/ '';
+        let checkInterval;
+        let progressSimulation = 0;
+        
+        // Simulate progress for demo purposes
+        function simulateProgress() {
+            const progressBar = document.querySelector('.progress-bar');
+            const statusText = document.getElementById('status-text');
+            const downloadSpeed = document.getElementById('download-speed');
+            const peers = document.getElementById('peers');
+            const eta = document.getElementById('eta');
+            
+            progressSimulation += Math.random() * 5;
+            if (progressSimulation > 100) progressSimulation = 100;
+            
+            progressBar.style.width = progressSimulation + '%';
+            
+            // Update status based on progress
+            if (progressSimulation < 10) {
+                statusText.textContent = 'Conectando a peers...';
+                downloadSpeed.textContent = '0 KB/s';
+                peers.textContent = Math.floor(Math.random() * 3) + ' peers';
+            } else if (progressSimulation < 30) {
+                statusText.textContent = 'Descargando metadatos...';
+                downloadSpeed.textContent = Math.floor(Math.random() * 500 + 100) + ' KB/s';
+                peers.textContent = Math.floor(Math.random() * 10 + 3) + ' peers';
+            } else if (progressSimulation < 60) {
+                statusText.textContent = 'Descargando contenido...';
+                downloadSpeed.textContent = Math.floor(Math.random() * 2000 + 500) + ' KB/s';
+                peers.textContent = Math.floor(Math.random() * 20 + 10) + ' peers';
+            } else {
+                statusText.textContent = 'Preparando para streaming...';
+                downloadSpeed.textContent = Math.floor(Math.random() * 1000 + 1000) + ' KB/s';
+                peers.textContent = Math.floor(Math.random() * 15 + 15) + ' peers';
+                
+                // Enable streaming check button
+                document.getElementById('check-streaming').disabled = false;
+            }
+            
+            // Calculate ETA
+            const remainingPercent = 100 - progressSimulation;
+            const etaMinutes = Math.floor(remainingPercent / 10);
+            eta.textContent = etaMinutes > 0 ? etaMinutes + ' min restantes' : 'Casi listo';
+        }
+        
+        // Check if streaming is ready
+        function checkStreamingReady() {
+            fetch('/stream/video/' + torrentId, {method: 'HEAD'})
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to streaming
+                        window.location.href = '/stream/video/' + torrentId;
+                    } else {
+                        console.log('Stream not ready yet');
+                    }
+                })
+                .catch(error => {
+                    console.log('Stream not ready:', error);
+                });
+        }
+        
+        // Start simulation and checking
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate progress every 2 seconds
+            const progressInterval = setInterval(simulateProgress, 2000);
+            
+            // Check streaming readiness every 10 seconds
+            checkInterval = setInterval(checkStreamingReady, 10000);
+            
+            // Button click handler
+            document.getElementById('check-streaming').addEventListener('click', function() {
+                checkStreamingReady();
+            });
+            
+            // Auto-redirect when progress reaches 100%
+            const autoCheckInterval = setInterval(function() {
+                if (progressSimulation >= 100) {
+                    clearInterval(autoCheckInterval);
+                    setTimeout(function() {
+                        window.location.href = '/stream/video/' + torrentId;
+                    }, 3000);
+                }
+            }, 1000);
+            
+            // Initial progress
+            simulateProgress();
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>
