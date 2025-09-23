@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import robertfenyiner.latstream.services.LatTeamSearchService;
 import robertfenyiner.latstream.models.TorrentResult;
+import robertfenyiner.latstream.content.VideoRepository;
+import robertfenyiner.latstream.content.MusicRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -17,11 +19,22 @@ public class HomeController {
 
     @Autowired
     private LatTeamSearchService latTeamSearchService;
+    
+    @Autowired
+    private VideoRepository videoRepository;
+    
+    @Autowired
+    private MusicRepository musicRepository;
 
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("darkmodeenabled", false);
         model.addAttribute("title", "LatStream - LAT-Team Private Tracker Interface");
+        
+        // Add media counts for the dashboard
+        model.addAttribute("videoCount", videoRepository.count());
+        model.addAttribute("musicCount", musicRepository.count());
+        
         return "index";
     }
 
@@ -39,6 +52,10 @@ public class HomeController {
         
         model.addAttribute("results", results);
         model.addAttribute("searchQuery", query);
+        
+        // Add media counts
+        model.addAttribute("videoCount", videoRepository.count());
+        model.addAttribute("musicCount", musicRepository.count());
         
         return "index";
     }
